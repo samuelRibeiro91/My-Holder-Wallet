@@ -3,15 +3,20 @@
 
     <!-->ChartsFragment<-->
     <string name="my_wallet_title">Minha Carteira Holder</string>
-    <string name="description">Descrição</string>
-    <string name="initial">Sigla</string>
-    <string name="paper">Papel</string>
-    <string name="list_transactions">Lista de Transações</string>
+
+
+
     <string name="list_papers">Lista de Papéis</string>
-    <string name="brokers">Corretoras</string>
     <string name="papers">Papéis</string>
+    <string name="paper">Papel</string>
+    <string name="initial">Sigla</string>
+    <string name="description">Descrição</string>
+
+    <string name="list_transactions">Lista de Transações</string>
     <string name="transactions">Transações</string>
+
     <string name="list_brokers">Lista de Corretoras</string>
+    <string name="brokers">Corretoras</string>
     <string name="broker">Corretora</string>
     <string name="broker_name">Nome Corretora</string>
 
