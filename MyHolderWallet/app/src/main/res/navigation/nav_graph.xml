@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/chartsFragment">
+
+    <fragment
+        android:id="@+id/chartsFragment"
+        android:name="com.samuel.myholderwallet.ui.charts.ChartsFragment"
+        android:label="@string/my_wallet_title"
+        tools:layout="@layout/fragment_charts" >
+        <action
+            android:id="@+id/action_chatsFragment_to_optionsFragment"
+            app:destination="@id/optionsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/optionsFragment"
+        android:name="com.samuel.myholderwallet.ui.options.OptionsFragment"
+        android:label="@string/my_wallet_title"
+        tools:layout="@layout/fragment_options" >
+        <action
+            android:id="@+id/action_optionsFragment_to_paperListFragment"
+            app:destination="@id/paperListFragment" />
+        <action
+            android:id="@+id/action_optionsFragment_to_transactionListFragment"
+            app:destination="@id/transactionListFragment" />
+        <action
+            android:id="@+id/action_optionsFragment_to_brokerListFragment"
+            app:destination="@id/brokerListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/paperListFragment"
+        android:name="com.samuel.myholderwallet.ui.paperlist.PaperListFragment"
+        android:label="@string/list_papers"
+        tools:layout="@layout/fragment_paper_list" >
+        <action
+            android:id="@+id/action_paperListFragment_to_paperFragment"
+            app:destination="@id/paperFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/transactionListFragment"
+        android:name="com.samuel.myholderwallet.ui.transactionlist.TransactionListFragment"
+        android:label="@string/list_transactions"
+        tools:layout="@layout/fragment_transaction_list" />
+    <fragment
+        android:id="@+id/paperFragment"
+        android:name="com.samuel.myholderwallet.ui.paper.PaperFragment"
+        android:label="@string/paper"
+        tools:layout="@layout/fragment_paper" >
+        <argument
+            android:name="paper"
+            app:argType="com.samuel.myholderwallet.db.entity.PaperEntity"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+    <fragment
+        android:id="@+id/brokerListFragment"
+        android:name="com.samuel.myholderwallet.ui.brokerlist.BrokerListFragment"
+        android:label="@string/list_brokers"
+        tools:layout="@layout/fragment_broker_list" >
+        <action
+            android:id="@+id/action_brokerListFragment_to_brokerFragment"
+            app:destination="@id/brokerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/brokerFragment"
+        android:name="com.samuel.myholderwallet.ui.broker.BrokerFragment"
+        android:label="@string/broker"
+        tools:layout="@layout/fragment_broker" >
+        <argument
+            android:name="broker"
+            app:argType="com.samuel.myholderwallet.db.entity.BrokerEntity"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+</navigation>

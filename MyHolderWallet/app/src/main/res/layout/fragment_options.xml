@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#80000000"
+    tools:context=".ui.options.OptionsFragment">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/faOpenBrokers"
+        app:layout_constraintBottom_toBottomOf="@id/faOpenBrokers"
+        app:layout_constraintRight_toLeftOf="@id/faOpenBrokers"
+        android:layout_marginEnd="20dp"
+        android:textColor="@color/black"
+        android:text="@string/brokers"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/faOpenBrokers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        app:fabSize="mini"
+        android:src="@drawable/ic_broker"
+        app:layout_constraintBottom_toTopOf="@id/faOpenPapers"
+        app:layout_constraintRight_toRightOf="@id/faCloseOptions"
+        app:layout_constraintLeft_toLeftOf="@id/faCloseOptions"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/faOpenPapers"
+        app:layout_constraintBottom_toBottomOf="@id/faOpenPapers"
+        app:layout_constraintRight_toLeftOf="@id/faOpenPapers"
+        android:layout_marginEnd="20dp"
+        android:textColor="@color/black"
+        android:text="@string/papers"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/faOpenPapers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        app:fabSize="mini"
+        android:src="@drawable/ic_paper"
+        app:layout_constraintBottom_toTopOf="@id/faOpenTransactions"
+        app:layout_constraintRight_toRightOf="@id/faCloseOptions"
+        app:layout_constraintLeft_toLeftOf="@id/faCloseOptions"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/faOpenTransactions"
+        app:layout_constraintBottom_toBottomOf="@id/faOpenTransactions"
+        app:layout_constraintRight_toLeftOf="@id/faOpenTransactions"
+        android:layout_marginEnd="20dp"
+        android:textColor="@color/black"
+        android:text="@string/transactions"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/faOpenTransactions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_transaction"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toTopOf="@id/faCloseOptions"
+        app:layout_constraintRight_toRightOf="@id/faCloseOptions"
+        app:layout_constraintLeft_toLeftOf="@id/faCloseOptions"
+        />
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/faCloseOptions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_close"
+        app:fabSize="normal"
+        android:backgroundTint="#CB121D"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Minha Carteira Holder</string>
+
+    <!-->ChartsFragment<-->
+    <string name="my_wallet_title">Minha Carteira Holder</string>
+    <string name="description">Descrição</string>
+    <string name="initial">Sigla</string>
+    <string name="paper">Papel</string>
+    <string name="list_transactions">Lista de Transações</string>
+    <string name="list_papers">Lista de Papéis</string>
+    <string name="brokers">Corretoras</string>
+    <string name="papers">Papéis</string>
+    <string name="transactions">Transações</string>
+    <string name="list_brokers">Lista de Corretoras</string>
+    <string name="broker">Corretora</string>
+    <string name="broker_name">Nome Corretora</string>
+
+    <string name="broker_inserted_sucessfully">Corretora cadastrada com sucesso!</string>
+    <string name="broker_error_to_insert">Ocorreu um erro ao cadastrar a corretora!</string>
+    <string name="broker_updated_sucessfully">Corretora atualizada com sucesso!</string>
+    <string name="broker_error_to_update">Ocorreu um erro ao atualizar a corretora!</string>
+
+    <string name="paper_inserted_sucessfully">Papel cadastrado com sucesso!</string>
+    <string name="paper_error_to_insert">Ocorreu um erro ao cadastrar o papel!</string>
+    <string name="paper_updated_sucessfully">Papel atualizado com sucesso!</string>
+    <string name="paper_error_to_update">Ocorreu um erro ao atualizar o papel!</string>
+</resources>
