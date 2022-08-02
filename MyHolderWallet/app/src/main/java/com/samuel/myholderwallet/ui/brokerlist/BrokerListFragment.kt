@@ -1,5 +1,6 @@
 package com.samuel.myholderwallet.ui.brokerlist
 
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.samuel.myholderwallet.R
 import com.samuel.myholderwallet.db.AppDatabase
 import com.samuel.myholderwallet.db.dao.BrokerDAO
@@ -57,12 +59,35 @@ class BrokerListFragment : Fragment(R.layout.fragment_broker_list) {
                     findNavController().navigateWithAnimations(directions)
 
                 }
+
+                onDeleteClick = { broker ->
+
+                    AlertDialog.Builder(context)
+                        .setTitle("Excluir Corretora")
+                        .setMessage("Deseja realmente excluir essa corretora?")
+                        .setPositiveButton("Confirmar") { _, _ ->
+                            viewModel.deleteBroker(broker)
+                            viewModel.getBrokers()
+                        }
+                        .setNegativeButton("Cancelar"
+                        ) { _, _ ->
+                            //
+                        }
+                        .create()
+                        .show()
+
+
+                }
             }
 
             this.requireView().findViewById<RecyclerView>(R.id.recycler_brokers).run {
                 setHasFixedSize(true)
                 adapter = brokerListAdapter
             }
+        }
+
+        viewModel.messageStateEventData.observe(viewLifecycleOwner){ stringResId ->
+            Snackbar.make(requireView(), stringResId, Snackbar.LENGTH_LONG).show()
         }
     }
 
@@ -73,6 +98,7 @@ class BrokerListFragment : Fragment(R.layout.fragment_broker_list) {
 
 
     }
+
 
 
 

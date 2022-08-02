@@ -1,16 +1,21 @@
 package com.samuel.myholderwallet.ui.paperlist
 
+import android.app.AlertDialog
+import android.app.Application
+import android.content.DialogInterface
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.samuel.myholderwallet.R
 import com.samuel.myholderwallet.db.AppDatabase
 import com.samuel.myholderwallet.db.dao.PaperDAO
@@ -56,12 +61,33 @@ class PaperListFragment : Fragment(R.layout.fragment_paper_list) {
                     findNavController().navigateWithAnimations(directions)
 
                 }
+                onDeleteClick = { paper ->
+
+                    AlertDialog.Builder(context)
+                        .setTitle("Excluir Papel")
+                        .setMessage("Deseja realmente excluir esse papel?")
+                        .setPositiveButton("Confirmar") { _, _ ->
+                            viewModel.deletePaper(paper)
+                            viewModel.getPapers()
+                        }
+                        .setNegativeButton("Cancelar"
+                        ) { _, _ ->
+                            //
+                        }
+                        .create()
+                        .show()
+
+                }
             }
 
             this.requireView().findViewById<RecyclerView>(R.id.recycler_papers).run {
                 setHasFixedSize(true)
                 adapter = paperListAdapter
             }
+        }
+
+        viewModel.messageStateEventData.observe(viewLifecycleOwner){ stringResId ->
+            Snackbar.make(requireView(), stringResId, Snackbar.LENGTH_LONG).show()
         }
     }
 

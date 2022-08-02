@@ -3,6 +3,7 @@ package com.samuel.myholderwallet.ui.brokerlist
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.samuel.myholderwallet.R
@@ -10,6 +11,7 @@ import com.samuel.myholderwallet.db.entity.BrokerEntity
 
 class BrokerListAdapter(private val brokers: List<BrokerEntity>) : RecyclerView.Adapter<BrokerListAdapter.BrokerListViewHolder>() {
     var onItemClick: ((entity: BrokerEntity) -> Unit)? = null
+    var onDeleteClick: ((entity: BrokerEntity) -> Unit)? = null
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -29,6 +31,7 @@ class BrokerListAdapter(private val brokers: List<BrokerEntity>) : RecyclerView.
 
     inner class BrokerListViewHolder(item: View): RecyclerView.ViewHolder(item){
         private val textBrokerName: TextView = itemView.findViewById(R.id.text_broker_name)
+        private val imageDelete:  ImageButton = item.findViewById(R.id.broker_delete)
 
         fun bindView(broker: BrokerEntity){
             textBrokerName.text = broker.name
@@ -36,6 +39,11 @@ class BrokerListAdapter(private val brokers: List<BrokerEntity>) : RecyclerView.
             itemView.setOnClickListener{
                 onItemClick?.invoke(broker)
             }
+
+            imageDelete.setOnClickListener {
+                onDeleteClick?.invoke(broker)
+            }
+
 
         }
     }

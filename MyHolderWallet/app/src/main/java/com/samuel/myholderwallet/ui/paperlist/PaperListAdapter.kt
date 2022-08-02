@@ -3,6 +3,7 @@ package com.samuel.myholderwallet.ui.paperlist
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.samuel.myholderwallet.R
@@ -10,6 +11,7 @@ import com.samuel.myholderwallet.db.entity.PaperEntity
 
 class PaperListAdapter(private val papers: List<PaperEntity>) : RecyclerView.Adapter<PaperListAdapter.BrokerListViewHolder>() {
     var onItemClick: ((entity: PaperEntity) -> Unit)? = null
+    var onDeleteClick: ((entity: PaperEntity) -> Unit)? = null
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -28,15 +30,20 @@ class PaperListAdapter(private val papers: List<PaperEntity>) : RecyclerView.Ada
     override fun getItemCount() = papers.size
 
     inner class BrokerListViewHolder(item: View): RecyclerView.ViewHolder(item){
-        private val textBrokerInitial: TextView = itemView.findViewById(R.id.text_paper_initial)
-        private val textBrokerDescription: TextView = itemView.findViewById(R.id.text_paper_description)
+        private val textPaperInitial: TextView = itemView.findViewById(R.id.text_paper_initial)
+        private val textPaperDescription: TextView = itemView.findViewById(R.id.text_paper_description)
+        private val buttonPaperDelete: ImageButton = itemView.findViewById(R.id.paper_delete)
 
         fun bindView(paper: PaperEntity){
-            textBrokerInitial.text = paper.initial
-            textBrokerDescription.text = paper.description
+            textPaperInitial.text = paper.initial
+            textPaperDescription.text = paper.description
 
             itemView.setOnClickListener{
                 onItemClick?.invoke(paper)
+            }
+
+            buttonPaperDelete.setOnClickListener {
+                onDeleteClick?.invoke(paper)
             }
 
         }

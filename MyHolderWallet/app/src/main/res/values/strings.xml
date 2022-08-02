@@ -24,9 +24,13 @@
     <string name="broker_error_to_insert">Ocorreu um erro ao cadastrar a corretora!</string>
     <string name="broker_updated_sucessfully">Corretora atualizada com sucesso!</string>
     <string name="broker_error_to_update">Ocorreu um erro ao atualizar a corretora!</string>
+    <string name="broker_deleted_sucessfully">Corretora excluída com sucesso!</string>
+    <string name="broker_error_to_delete">Ocorreu um erro ao excluir a corretora!</string>
 
     <string name="paper_inserted_sucessfully">Papel cadastrado com sucesso!</string>
     <string name="paper_error_to_insert">Ocorreu um erro ao cadastrar o papel!</string>
     <string name="paper_updated_sucessfully">Papel atualizado com sucesso!</string>
     <string name="paper_error_to_update">Ocorreu um erro ao atualizar o papel!</string>
+    <string name="paper_deleted_sucessfully">Papel excluido com sucesso!</string>
+    <string name="paper_error_to_delete">Ocorreu um erro ao excluir o papel!</string>
 </resources>

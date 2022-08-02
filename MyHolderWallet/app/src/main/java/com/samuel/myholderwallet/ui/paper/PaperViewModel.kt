@@ -6,10 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.samuel.myholderwallet.R
-import com.samuel.myholderwallet.db.entity.BrokerEntity
 import com.samuel.myholderwallet.db.entity.PaperEntity
 import com.samuel.myholderwallet.repository.PaperRepository
-import com.samuel.myholderwallet.ui.broker.BrokerViewModel
 import kotlinx.coroutines.launch
 
 class PaperViewModel(
@@ -30,7 +28,7 @@ class PaperViewModel(
             updatePaper(id, initial, description)
         }
         else
-            addPaper(initial, description)
+            insertPaper(initial, description)
     }
 
     private fun updatePaper(id: Long,initial: String, description: String) = viewModelScope.launch {
@@ -46,7 +44,7 @@ class PaperViewModel(
         }
     }
 
-    fun addPaper(initial: String, description: String) = viewModelScope.launch {
+    private fun insertPaper(initial: String, description: String) = viewModelScope.launch {
         try {
             val id = repository.insert(PaperEntity(initial = initial, description = description) )
 

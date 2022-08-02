@@ -28,7 +28,7 @@ class BrokerViewModel(
         }
         else
         {
-            addBroker(name)
+            insertBroker(name)
         }
     }
 
@@ -45,7 +45,7 @@ class BrokerViewModel(
         }
     }
 
-    fun addBroker(name: String) = viewModelScope.launch {
+    private fun insertBroker(name: String) = viewModelScope.launch {
         try {
             val id = repository.insert(BrokerEntity(name = name) )
 
@@ -59,6 +59,8 @@ class BrokerViewModel(
             Log.e(TAG, ex.toString())
         }
     }
+
+
 
     sealed class BrokerState{
         object Inserted: BrokerState()
