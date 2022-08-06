@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.samuel.myholderwallet.R
 import com.samuel.myholderwallet.db.entity.PaperEntity
 import com.samuel.myholderwallet.repository.PaperRepository
+import com.samuel.myholderwallet.types.PaperType
 import kotlinx.coroutines.launch
 
 class PaperViewModel(
@@ -23,17 +24,17 @@ class PaperViewModel(
         get() = _messageStateEventData
 
 
-    fun addOrUpdatePaper(initial: String, description: String, id: Long = 0) = viewModelScope.launch {
+    fun addOrUpdatePaper(initial: String, description: String, type: PaperType, id: Long = 0) = viewModelScope.launch {
         if (id > 0){
-            updatePaper(id, initial, description)
+            updatePaper(id, initial, description, type)
         }
         else
-            insertPaper(initial, description)
+            insertPaper(initial, description, type)
     }
 
-    private fun updatePaper(id: Long,initial: String, description: String) = viewModelScope.launch {
+    private fun updatePaper(id: Long,initial: String, description: String, type: PaperType) = viewModelScope.launch {
         try {
-            repository.update(PaperEntity(id, initial, description))
+            repository.update(PaperEntity(id = id, initial = initial, description = description, type = type))
 
             _paperStateEventData.value = PaperState.Updated
             _messageStateEventData.value = R.string.paper_updated_sucessfully
@@ -44,9 +45,9 @@ class PaperViewModel(
         }
     }
 
-    private fun insertPaper(initial: String, description: String) = viewModelScope.launch {
+    private fun insertPaper(initial: String, description: String, type: PaperType) = viewModelScope.launch {
         try {
-            val id = repository.insert(PaperEntity(initial = initial, description = description) )
+            val id = repository.insert(PaperEntity(initial = initial, description = description, type = type) )
 
             if (id > 0){
                 _paperStateEventData.value = PaperState.Inserted

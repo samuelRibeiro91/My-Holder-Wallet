@@ -14,47 +14,66 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:paddingStart="16dp"
             android:paddingTop="8dp"
             android:paddingEnd="16dp"
             android:paddingBottom="8dp">
 
-            <TextView
-                android:id="@+id/text_paper_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                tools:text="Transmissão Paulista"/>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/text_paper_initial"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                tools:text="TRPL4"/>
 
+
+
+                <TextView
+                    android:id="@+id/text_paper_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toTopOf="@id/paper_delete"
+                    app:layout_constraintBottom_toBottomOf="@id/paper_delete"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/paper_delete"
+                    tools:text="Transmissão Paulista"/>
+
+
+                <ImageButton
+                    android:id="@+id/paper_delete"
+                    android:src="@drawable/ic_baseline_delete_24"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:background="@color/design_default_color_background"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="0dp"
+                    android:layout_gravity="end"
+                    android:visibility="visible"
+                    />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="20dp"
-            android:layout_height="match_parent">
-            <ImageButton
-                android:id="@+id/paper_delete"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_launcher_background"
-                android:visibility="visible"
-                />
-        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_paper_initial"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="8dp"
+            tools:text="TRPL4"/>
+
 
     </LinearLayout>
 

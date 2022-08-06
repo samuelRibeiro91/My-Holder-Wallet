@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
@@ -20,6 +22,7 @@ import com.samuel.myholderwallet.db.dao.PaperDAO
 import com.samuel.myholderwallet.extension.hideKeyboard
 import com.samuel.myholderwallet.repository.PaperRepository
 import com.samuel.myholderwallet.repository.PaperRepositoryImpl
+import com.samuel.myholderwallet.types.PaperType
 import com.samuel.myholderwallet.ui.broker.BrokerViewModel
 
 class PaperFragment : Fragment(R.layout.fragment_paper) {
@@ -41,9 +44,13 @@ class PaperFragment : Fragment(R.layout.fragment_paper) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        requireView().findViewById<Spinner>(R.id.spinner_paper).adapter =  ArrayAdapter(requireContext(), R.layout.spinneritem, R.id.spinnerText, PaperType.values())
+
         args.paper?.let { paperEntity ->
             requireView().findViewById<TextInputEditText>(R.id.input_initial).setText(paperEntity.initial)
             requireView().findViewById<TextInputEditText>(R.id.input_description).setText(paperEntity.description)
+
+            requireView().findViewById<Spinner>(R.id.spinner_paper).setSelection(paperEntity.type.ordinal)
         }
 
         observeEvents()
@@ -93,10 +100,11 @@ class PaperFragment : Fragment(R.layout.fragment_paper) {
 
     private fun setListeners() {
         requireView().findViewById<FloatingActionButton>(R.id.faAddPaper).setOnClickListener {
-            val initial  = requireView().findViewById<TextInputEditText>(R.id.input_initial)?.text.toString()
+            val initial      = requireView().findViewById<TextInputEditText>(R.id.input_initial)?.text.toString()
             val description  = requireView().findViewById<TextInputEditText>(R.id.input_description)?.text.toString()
-            
-            viewModel.addOrUpdatePaper(initial = initial, description = description, args.paper?.id ?: 0)
+            val type         = PaperType.values()[requireView().findViewById<Spinner>(R.id.spinner_paper).selectedItemPosition]
+
+            viewModel.addOrUpdatePaper(initial = initial, description = description, type = type, id =args.paper?.id ?: 0)
         }
     }
 
