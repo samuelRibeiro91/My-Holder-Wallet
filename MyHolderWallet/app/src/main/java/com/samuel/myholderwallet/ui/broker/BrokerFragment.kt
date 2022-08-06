@@ -95,7 +95,7 @@ class BrokerFragment : Fragment(R.layout.fragment_broker) {
 
             if (name.isEmpty()){
                 requireView().findViewById<TextInputEditText>(R.id.input_name).requestFocus()
-                requireView().findViewById<TextInputEditText>(R.id.input_name).setError("Preencha o nome da corretora")
+                requireView().findViewById<TextInputEditText>(R.id.input_name).error = "Preencha o nome da corretora"
             }
             else
                 viewModel.addOrUpdateBroker(name, args.broker?.id ?: 0)
