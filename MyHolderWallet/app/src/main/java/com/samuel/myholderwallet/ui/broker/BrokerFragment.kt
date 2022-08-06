@@ -91,9 +91,14 @@ class BrokerFragment : Fragment(R.layout.fragment_broker) {
 
     private fun setListeners() {
         requireView().findViewById<FloatingActionButton>(R.id.faAddBroker).setOnClickListener {
-            val name  = requireView().findViewById<TextInputEditText>(R.id.input_name)?.text.toString()
+            val name  = requireView().findViewById<TextInputEditText>(R.id.input_name).text.toString()
 
-            viewModel.addOrUpdateBroker(name, args.broker?.id ?: 0)
+            if (name.isEmpty()){
+                requireView().findViewById<TextInputEditText>(R.id.input_name).requestFocus()
+                requireView().findViewById<TextInputEditText>(R.id.input_name).setError("Preencha o nome da corretora")
+            }
+            else
+                viewModel.addOrUpdateBroker(name, args.broker?.id ?: 0)
         }
     }
 

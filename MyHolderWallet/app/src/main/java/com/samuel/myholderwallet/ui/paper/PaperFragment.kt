@@ -104,7 +104,19 @@ class PaperFragment : Fragment(R.layout.fragment_paper) {
             val description  = requireView().findViewById<TextInputEditText>(R.id.input_description)?.text.toString()
             val type         = PaperType.values()[requireView().findViewById<Spinner>(R.id.spinner_paper).selectedItemPosition]
 
-            viewModel.addOrUpdatePaper(initial = initial, description = description, type = type, id =args.paper?.id ?: 0)
+            if (initial.isEmpty()){
+                requireView().findViewById<TextInputEditText>(R.id.input_initial).requestFocus()
+                requireView().findViewById<TextInputEditText>(R.id.input_initial).error = "Preencha a Sigla"
+            }
+            else
+            if (description.isEmpty()){
+                requireView().findViewById<TextInputEditText>(R.id.input_description).requestFocus()
+                requireView().findViewById<TextInputEditText>(R.id.input_description).error = "Preencha a descrição"
+            }
+            else
+            {
+                viewModel.addOrUpdatePaper(initial = initial, description = description, type = type, id =args.paper?.id ?: 0)
+            }
         }
     }
 
