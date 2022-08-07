@@ -42,7 +42,11 @@
         android:id="@+id/transactionListFragment"
         android:name="com.samuel.myholderwallet.ui.transactionlist.TransactionListFragment"
         android:label="@string/list_transactions"
-        tools:layout="@layout/fragment_transaction_list" />
+        tools:layout="@layout/fragment_transaction_list" >
+        <action
+            android:id="@+id/action_transactionListFragment_to_transactionFragment"
+            app:destination="@id/transactionFragment" />
+    </fragment>
     <fragment
         android:id="@+id/paperFragment"
         android:name="com.samuel.myholderwallet.ui.paper.PaperFragment"
@@ -74,4 +78,9 @@
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>
+    <fragment
+        android:id="@+id/transactionFragment"
+        android:name="com.samuel.myholderwallet.ui.transaction.TransactionFragment"
+        android:label="fragment_transaction"
+        tools:layout="@layout/fragment_transaction" />
 </navigation>

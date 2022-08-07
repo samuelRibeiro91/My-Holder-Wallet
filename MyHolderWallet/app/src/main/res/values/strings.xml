@@ -33,4 +33,8 @@
     <string name="paper_error_to_update">Ocorreu um erro ao atualizar o papel!</string>
     <string name="paper_deleted_sucessfully">Papel excluido com sucesso!</string>
     <string name="paper_error_to_delete">Ocorreu um erro ao excluir o papel!</string>
+    <string name="quantidade">Quantidade</string>
+    <string name="valor_unitario">Valor Unitário</string>
+    <string name="custos_taxas_e_emolumentos">Custos (Taxas e Emolumentos)</string>
+    <string name="date">Data</string>
 </resources>

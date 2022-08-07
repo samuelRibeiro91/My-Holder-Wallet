@@ -1,10 +1,7 @@
 package com.samuel.myholderwallet.db.entity
 
 import android.os.Parcelable
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
 import com.samuel.myholderwallet.types.MovementTypes
 import kotlinx.parcelize.Parcelize
 
@@ -19,15 +16,16 @@ import kotlinx.parcelize.Parcelize
                             entity = PaperEntity::class,
                             parentColumns = arrayOf("id"),
                             childColumns = arrayOf("fk_paper"))])
+
 data class TransactionEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
 
-    @ColumnInfo(name = "fk_broker")
-    var broker: Int = 0,
+    @ColumnInfo(index = true)
+    var fk_broker: Int? = null,
 
-    @ColumnInfo(name = "fk_paper")
-    var paper: Int = 0,
+    @ColumnInfo(index = true)
+    var fk_paper: Int? = null,
 
     var quantity: Int = 0,
 
@@ -39,5 +37,5 @@ data class TransactionEntity(
 
     var credit: Float = 0.0f,
 
-   var date: Double = 0.0
+    var date: Double = 0.0
 ) : Parcelable
