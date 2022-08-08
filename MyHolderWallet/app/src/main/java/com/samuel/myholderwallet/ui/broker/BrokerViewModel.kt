@@ -34,7 +34,8 @@ class BrokerViewModel(
 
     private fun updateBroker(id: Long, name: String) = viewModelScope.launch {
         try {
-            repository.update(BrokerEntity(id, name))
+            repository.update(BrokerEntity().apply { this.id   = id
+                                                     this.name = name })
 
             _brokerStateEventData.value = BrokerState.Updated
             _messageStateEventData.value = R.string.broker_updated_sucessfully
@@ -47,7 +48,7 @@ class BrokerViewModel(
 
     private fun insertBroker(name: String) = viewModelScope.launch {
         try {
-            val id = repository.insert(BrokerEntity(name = name) )
+            val id = repository.insert(BrokerEntity().apply { this.name = name } )
 
             if (id > 0){
                 _brokerStateEventData.value = BrokerState.Inserted

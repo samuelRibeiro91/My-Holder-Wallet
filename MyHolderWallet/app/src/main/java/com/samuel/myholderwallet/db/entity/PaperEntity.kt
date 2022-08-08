@@ -8,13 +8,15 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @Entity(tableName = "paper")
-data class PaperEntity (
+class PaperEntity: Parcelable {
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
+    var id: Long = 0
 
-    val initial: String,
+    var initial: String = ""
 
-    val description: String,
+    var description: String = ""
 
-    val type: PaperType = PaperType.STOCK
-): Parcelable
+    var type: PaperType = PaperType.STOCK
+
+    override fun toString(): String  = "$initial - $description"
+}

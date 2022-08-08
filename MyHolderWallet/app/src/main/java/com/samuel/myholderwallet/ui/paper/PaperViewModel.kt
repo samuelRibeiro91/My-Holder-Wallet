@@ -34,7 +34,11 @@ class PaperViewModel(
 
     private fun updatePaper(id: Long,initial: String, description: String, type: PaperType) = viewModelScope.launch {
         try {
-            repository.update(PaperEntity(id = id, initial = initial, description = description, type = type))
+            repository.update(PaperEntity().apply{
+                this.id = id
+                this.initial = initial
+                this.description = description
+                this.type = type})
 
             _paperStateEventData.value = PaperState.Updated
             _messageStateEventData.value = R.string.paper_updated_sucessfully
@@ -47,7 +51,10 @@ class PaperViewModel(
 
     private fun insertPaper(initial: String, description: String, type: PaperType) = viewModelScope.launch {
         try {
-            val id = repository.insert(PaperEntity(initial = initial, description = description, type = type) )
+            val id = repository.insert(PaperEntity().apply {
+                this.initial = initial
+                this.description = description
+                this.type = type} )
 
             if (id > 0){
                 _paperStateEventData.value = PaperState.Inserted

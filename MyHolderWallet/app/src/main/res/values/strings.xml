@@ -37,4 +37,6 @@
     <string name="valor_unitario">Valor Unitário</string>
     <string name="custos_taxas_e_emolumentos">Custos (Taxas e Emolumentos)</string>
     <string name="date">Data</string>
+    <string name="transaction">Transação</string>
+    <string name="transaction_type">Tipo de Transação</string>
 </resources>

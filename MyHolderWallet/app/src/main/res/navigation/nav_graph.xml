@@ -81,6 +81,6 @@
     <fragment
         android:id="@+id/transactionFragment"
         android:name="com.samuel.myholderwallet.ui.transaction.TransactionFragment"
-        android:label="fragment_transaction"
+        android:label="@string/transaction"
         tools:layout="@layout/fragment_transaction" />
 </navigation>
