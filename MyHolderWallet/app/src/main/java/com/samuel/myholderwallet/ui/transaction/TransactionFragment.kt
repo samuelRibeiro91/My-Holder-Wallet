@@ -3,13 +3,14 @@ package com.samuel.myholderwallet.ui.transaction
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
-import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.samuel.myholdertransaction.db.dao.TransactionDAO
 import com.samuel.myholderwallet.R
 import com.samuel.myholderwallet.db.AppDatabase
@@ -70,32 +71,66 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
 
     private fun configureViewListeners() {
 
+        requireView().findViewById<Spinner>(R.id.spinner_paper).onItemSelectedListener = object  : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
 
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                viewModel.paperSelected.postValue(viewModel.allPapersEvent.value?.get(position) ?: null)
+            }
+        }
+
+        requireView().findViewById<Spinner>(R.id.spinner_broker).onItemSelectedListener = object  : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(p0: AdapterView<*>?) {  }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                viewModel.brokerSelected.postValue(viewModel.allBrokersEvent.value?.get(position) ?: null)
+            }
+        }
 
 
         requireView().findViewById<Spinner>(R.id.spinner_transaction_type).onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-
-            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                 when(MovementTypes.values().get(position)){
+                 when(MovementTypes.values()[position]){
                      MovementTypes.BUY_PAPERS ->{
+                         requireView().findViewById<Spinner>(R.id.spinner_paper).visibility = View.VISIBLE
+                         requireView().findViewById<TextInputEditText>(R.id.input_quantity).visibility = View.VISIBLE
+                         requireView().findViewById<TextInputEditText>(R.id.input_costs).visibility = View.VISIBLE
 
+                         requireView().findViewById<TextInputLayout>(R.id.input_layout_value).hint = "Valor Unitário"
                      }
                      MovementTypes.MONEY_DEPOSIT -> {
+                         requireView().findViewById<Spinner>(R.id.spinner_paper).visibility = View.GONE
+                         requireView().findViewById<TextInputEditText>(R.id.input_quantity).visibility = View.GONE
+                         requireView().findViewById<TextInputEditText>(R.id.input_costs).visibility = View.GONE
 
+                         requireView().findViewById<TextInputLayout>(R.id.input_layout_value).hint = "Valor Total"
                      }
 
                      MovementTypes.CASH_WITHDRAWAL -> {
+                         requireView().findViewById<Spinner>(R.id.spinner_paper).visibility = View.GONE
+                         requireView().findViewById<TextInputEditText>(R.id.input_quantity).visibility = View.GONE
+                         requireView().findViewById<TextInputEditText>(R.id.input_costs).visibility = View.VISIBLE
 
+                         requireView().findViewById<TextInputLayout>(R.id.input_layout_value).hint = "Valor Total"
                      }
 
                      MovementTypes.INFLOW_DIVIDENDS -> {
+                         requireView().findViewById<Spinner>(R.id.spinner_paper).visibility = View.VISIBLE
+                         requireView().findViewById<TextInputEditText>(R.id.input_quantity).visibility = View.GONE
+                         requireView().findViewById<TextInputEditText>(R.id.input_costs).visibility = View.GONE
 
+                         requireView().findViewById<TextInputLayout>(R.id.input_layout_value).hint = "Valor Total"
                      }
 
+                     MovementTypes.SELL_PAPERS -> {
+                         requireView().findViewById<Spinner>(R.id.spinner_paper).visibility = View.VISIBLE
+                         requireView().findViewById<TextInputEditText>(R.id.input_quantity).visibility = View.VISIBLE
+                         requireView().findViewById<TextInputEditText>(R.id.input_costs).visibility = View.VISIBLE
 
+                         requireView().findViewById<TextInputLayout>(R.id.input_layout_value).hint = "Valor Unitário"
+                     }
                  }
             }
 

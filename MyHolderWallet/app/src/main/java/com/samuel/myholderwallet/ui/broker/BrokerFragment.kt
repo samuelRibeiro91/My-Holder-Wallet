@@ -3,10 +3,7 @@ package com.samuel.myholderwallet.ui.broker
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
@@ -98,7 +95,7 @@ class BrokerFragment : Fragment(R.layout.fragment_broker) {
                 requireView().findViewById<TextInputEditText>(R.id.input_name).error = "Preencha o nome da corretora"
             }
             else
-                viewModel.addOrUpdateBroker(name, args.broker?.id ?: 0)
+                viewModel.insertOrUpdateBroker(name, args.broker?.id ?: 0)
         }
     }
 

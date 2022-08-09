@@ -22,7 +22,7 @@ class BrokerViewModel(
     val messageStateEventData : LiveData<Int>
         get() = _messageStateEventData
 
-    fun addOrUpdateBroker(name: String, id: Long = 0) = viewModelScope.launch {
+    fun insertOrUpdateBroker(name: String, id: Long = 0) = viewModelScope.launch {
         if (id > 0){
             updateBroker(id, name)
         }

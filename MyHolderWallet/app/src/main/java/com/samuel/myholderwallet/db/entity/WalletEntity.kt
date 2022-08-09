@@ -9,20 +9,20 @@ import androidx.room.*
             parentColumns = ["id"],
             childColumns = ["fk_broker"])]
 )
-class WalletEntity{
+data class WalletEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    var id: Int = 0
+    var id: Int = 0,
 
     @ColumnInfo(name = "fk_broker")
-    var broker : Int = 0
+    var broker : Long = 0,
 
     @ColumnInfo(name = "balance")
-    var balance : Float = 0.0f
+    var balance : Float = 0.0f,
 
     @ColumnInfo(name = "credit")
-    var credit : Float = 0.0f
+    var credit : Float = 0.0f,
 
     @Ignore
     val totalbalance: Float = balance + credit
-}
+)

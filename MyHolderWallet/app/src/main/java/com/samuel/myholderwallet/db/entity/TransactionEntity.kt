@@ -22,10 +22,10 @@ data class TransactionEntity(
     val id: Long = 0,
 
     @ColumnInfo(index = true)
-    var fk_broker: Int? = null,
+    var fk_broker: Long? = null,
 
     @ColumnInfo(index = true)
-    var fk_paper: Int? = null,
+    var fk_paper: Long? = null,
 
     var quantity: Int = 0,
 

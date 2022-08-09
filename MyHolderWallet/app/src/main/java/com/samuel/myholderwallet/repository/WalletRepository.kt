@@ -6,6 +6,8 @@ interface WalletRepository {
 
     suspend fun get(id: Long): WalletEntity
 
+    suspend fun getByBroker(id: Long): WalletEntity?
+
     suspend fun getAll(): List<WalletEntity>
 
     suspend fun loadAllByIds(walletsIds: LongArray): List<WalletEntity>

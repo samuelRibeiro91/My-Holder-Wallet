@@ -8,6 +8,9 @@ interface WalletDAO {
     @Query("SELECT * FROM wallet where id = :id")
     suspend fun get(id: Long): WalletEntity
 
+    @Query("SELECT * FROM wallet where fk_broker = :id")
+    suspend fun getByBroker(id: Long): WalletEntity?
+
     @Query("SELECT * FROM wallet")
     suspend fun getAll(): List<WalletEntity>
 
