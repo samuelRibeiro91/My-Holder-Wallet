@@ -5,10 +5,15 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.samuel.myholdertransaction.db.dao.TransactionDAO
@@ -16,8 +21,12 @@ import com.samuel.myholderwallet.R
 import com.samuel.myholderwallet.db.AppDatabase
 import com.samuel.myholderwallet.db.dao.BrokerDAO
 import com.samuel.myholderwallet.db.dao.PaperDAO
+import com.samuel.myholderwallet.db.dao.WalletDAO
+import com.samuel.myholderwallet.extension.hideKeyboard
 import com.samuel.myholderwallet.repository.*
 import com.samuel.myholderwallet.types.MovementTypes
+import com.samuel.myholderwallet.ui.paper.PaperViewModel
+import com.samuel.myholderwallet.usecases.TransactionCreditsValidateUseCase
 
 
 class TransactionFragment : Fragment(R.layout.fragment_transaction) {
@@ -35,7 +44,16 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
                 val brokerDAO: BrokerDAO = AppDatabase.getInstance(requireContext()).brokerDAO
                 val brokerRepository: BrokerRepository = BrokerRepositoryImpl(brokerDAO)
 
-                return TransactionViewModel(transactionRepository = transactionRepository,paperRepository = paperRepository, brokerRepository = brokerRepository) as T
+                val walletDAO : WalletDAO = AppDatabase.getInstance(requireContext()).walletDAO
+                val walletRepository: WalletRepository = WalletRepositoryImpl(walletDAO)
+
+                val transactionCreditsValidateUseCase = TransactionCreditsValidateUseCase(walletRepository, requireContext())
+
+                return TransactionViewModel(
+                    transactionRepository = transactionRepository,
+                    paperRepository = paperRepository,
+                    brokerRepository = brokerRepository,
+                    transactionCreditsValidateUseCase = transactionCreditsValidateUseCase) as T
             }
         }
     }
@@ -47,13 +65,21 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
         viewModel.getPapers()
     }
 
+    private val args: TransactionFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        args.transaction?.let { transactionEntity ->
+            //
+        }
+
         observeViewModelEvents()
 
         configureViewListeners()
+
+        observeEvents()
 
         requireView().findViewById<Spinner>(R.id.spinner_transaction_type).adapter =  ArrayAdapter(requireContext(), R.layout.spinneritem, R.id.spinnerText, MovementTypes.values())
     }
@@ -134,6 +160,54 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
                  }
             }
 
+        }
+
+        requireView().findViewById<FloatingActionButton>(R.id.faAddTransaction).setOnClickListener {
+
+            viewModel.insertOrUpdateTransaction(
+                id =args.transaction?.id ?: 0,
+                quantity =
+            )
+        }
+    }
+
+    private fun observeEvents() {
+        viewModel.transactionStateEventData.observe(viewLifecycleOwner){ transactionEvent ->
+            when (transactionEvent){
+                is TransactionViewModel.TransactionState.Inserted ->{
+                    clearFields()
+                    hideKeyBoard()
+                    requireView().requestFocus()
+
+                    findNavController().popBackStack()
+
+                }
+
+                is TransactionViewModel.TransactionState.Updated ->{
+                    clearFields()
+                    hideKeyBoard()
+
+                    findNavController().popBackStack()
+                }
+            }
+
+        }
+
+        viewModel.messageStateEventData.observe(viewLifecycleOwner){ stringResId ->
+            Snackbar.make(requireView(), stringResId, Snackbar.LENGTH_LONG).show()
+        }
+    }
+
+
+    private fun clearFields() {
+        //
+    }
+
+    private fun hideKeyBoard() {
+        val parentActivity = requireActivity()
+
+        if (parentActivity is AppCompatActivity){
+            parentActivity.hideKeyboard()
         }
     }
 

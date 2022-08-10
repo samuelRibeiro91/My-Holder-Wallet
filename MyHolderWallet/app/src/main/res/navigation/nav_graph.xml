@@ -82,5 +82,11 @@
         android:id="@+id/transactionFragment"
         android:name="com.samuel.myholderwallet.ui.transaction.TransactionFragment"
         android:label="@string/transaction"
-        tools:layout="@layout/fragment_transaction" />
+        tools:layout="@layout/fragment_transaction" >
+        <argument
+            android:name="transaction"
+            app:argType="com.samuel.myholderwallet.db.entity.TransactionEntity"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
 </navigation>
