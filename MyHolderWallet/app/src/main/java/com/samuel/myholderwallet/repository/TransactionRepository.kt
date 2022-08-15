@@ -7,6 +7,8 @@ interface TransactionRepository {
 
     suspend fun getAll(): List<TransactionEntity>
 
+    suspend fun getAllByBroker(brokerID: Long): List<TransactionEntity>
+
     suspend fun loadAllByIds(transactionsIds: LongArray): List<TransactionEntity>
 
     suspend fun insertAll(vararg transactions: TransactionEntity)

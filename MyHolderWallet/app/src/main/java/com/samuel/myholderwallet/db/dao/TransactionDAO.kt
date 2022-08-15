@@ -11,6 +11,9 @@ interface TransactionDAO {
     @Query("SELECT * FROM `transaction`")
     suspend fun getAll(): List<TransactionEntity>
 
+    @Query("SELECT * FROM `transaction` where fk_broker = :brokerID order by date desc")
+    suspend fun getAllByBroker(brokerID: Long): List<TransactionEntity>
+
     @Query("SELECT * FROM `transaction` WHERE id IN (:transactionsIds)")
     suspend fun loadAllByIds(transactionsIds: LongArray): List<TransactionEntity>
 

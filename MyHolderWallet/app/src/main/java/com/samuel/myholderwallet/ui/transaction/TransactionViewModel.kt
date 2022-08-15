@@ -46,6 +46,8 @@ class TransactionViewModel(
 
     var paperSelected = MutableLiveData<PaperEntity>()
 
+    var movementTypeSelected = MutableLiveData<MovementTypes>()
+
     var oldValue = MutableLiveData<Float>()
 
     fun getPapers() = viewModelScope.launch {

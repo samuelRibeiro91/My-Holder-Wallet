@@ -8,6 +8,8 @@ class TransactionRepositoryImpl(private val transactionDAO: TransactionDAO): Tra
 
     override suspend fun getAll(): List<TransactionEntity> = transactionDAO.getAll()
 
+    override suspend fun getAllByBroker(brokerID: Long): List<TransactionEntity> = transactionDAO.getAllByBroker(brokerID)
+
     override suspend fun loadAllByIds(transactionsIds: LongArray): List<TransactionEntity> = transactionDAO.loadAllByIds(transactionsIds)
 
     override suspend fun insertAll(vararg transactions: TransactionEntity)  = transactionDAO.insertAll(*transactions)

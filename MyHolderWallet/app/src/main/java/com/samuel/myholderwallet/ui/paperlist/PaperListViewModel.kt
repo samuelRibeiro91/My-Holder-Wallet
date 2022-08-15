@@ -40,7 +40,7 @@ class PaperListViewModel(private val repository: PaperRepository): ViewModel() {
     }
 
     companion object{
-        private val TAG = BrokerListViewModel::class.java.simpleName
+        private val TAG = PaperListViewModel::class.java.simpleName
     }
 
 }

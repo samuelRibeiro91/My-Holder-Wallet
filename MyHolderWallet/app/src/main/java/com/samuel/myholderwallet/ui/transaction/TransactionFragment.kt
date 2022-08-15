@@ -23,10 +23,12 @@ import com.samuel.myholderwallet.db.dao.BrokerDAO
 import com.samuel.myholderwallet.db.dao.PaperDAO
 import com.samuel.myholderwallet.db.dao.WalletDAO
 import com.samuel.myholderwallet.extension.hideKeyboard
+import com.samuel.myholderwallet.extension.transformIntoDatePicker
 import com.samuel.myholderwallet.repository.*
 import com.samuel.myholderwallet.types.MovementTypes
-import com.samuel.myholderwallet.ui.paper.PaperViewModel
 import com.samuel.myholderwallet.usecases.TransactionCreditsValidateUseCase
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class TransactionFragment : Fragment(R.layout.fragment_transaction) {
@@ -72,7 +74,7 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
 
 
         args.transaction?.let { transactionEntity ->
-            //
+
         }
 
         observeViewModelEvents()
@@ -97,6 +99,9 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
 
     private fun configureViewListeners() {
 
+        requireView().findViewById<TextInputEditText>(R.id.input_date).transformIntoDatePicker(requireContext(), "dd/MM/yyyy", Date())
+
+
         requireView().findViewById<Spinner>(R.id.spinner_paper).onItemSelectedListener = object  : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(p0: AdapterView<*>?) {}
 
@@ -118,6 +123,9 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
+                viewModel.movementTypeSelected.postValue(MovementTypes.values()[position])
+
                  when(MovementTypes.values()[position]){
                      MovementTypes.BUY_PAPERS ->{
                          requireView().findViewById<Spinner>(R.id.spinner_paper).visibility = View.VISIBLE
@@ -164,10 +172,114 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
 
         requireView().findViewById<FloatingActionButton>(R.id.faAddTransaction).setOnClickListener {
 
-            viewModel.insertOrUpdateTransaction(
-                id =args.transaction?.id ?: 0,
-                quantity =
-            )
+            //Validations
+            var error = false
+
+            val inputValue = requireView().findViewById<TextInputEditText>(R.id.input_value)
+            var value = 0.0f
+
+            if (inputValue.text!!.isEmpty()){
+                inputValue.requestFocus()
+                inputValue.error = "Preencha o Valor"
+
+                error = true
+            }
+            else
+            {
+                if (inputValue.text!!.toString().toFloat() <= 0){
+                    inputValue.requestFocus()
+                    inputValue.error = "Valor não pode ser menor ou igual a zero!"
+
+                    error = true
+                }
+
+
+                value = inputValue.text!!.toString().toFloat()
+            }
+
+            val inputDate = requireView().findViewById<TextInputEditText>(R.id.input_date)
+            var date: Double = 0.0
+
+            if (inputDate.text!!.isEmpty()){
+                inputDate.requestFocus()
+                inputDate.error = "Preencha a Data"
+
+                error = true //SimpleDateFormat("dd/MM/yyyy").parse(requireView().findViewById<TextInputEditText>(R.id.input_date).text.toString()).time.toDouble()
+            }
+            else
+            {
+                date = SimpleDateFormat("dd/MM/yyyy").parse(inputDate.text.toString()).time.toDouble()
+            }
+
+
+            val inputQuantity = requireView().findViewById<TextInputEditText>(R.id.input_quantity)
+            var quantity: Int = 1
+
+            val inputCost = requireView().findViewById<TextInputEditText>(R.id.input_costs)
+            var cost = 0.0f
+
+            when (viewModel.movementTypeSelected.value!!){
+                MovementTypes.MONEY_DEPOSIT,
+                MovementTypes.INFLOW_DIVIDENDS,
+                MovementTypes.CASH_WITHDRAWAL -> {
+
+                    cost = 0.0f
+                    quantity = 1
+                }
+                MovementTypes.BUY_PAPERS,
+                MovementTypes.SELL_PAPERS -> {
+
+                    if (inputQuantity.text!!.isEmpty()){
+                        inputQuantity.requestFocus()
+                        inputQuantity.error = "Preencha a Quantidade"
+                        error = true
+                    }
+                    else
+                    {
+                      if (inputQuantity.text!!.toString().toInt() <= 0){
+                          inputQuantity.requestFocus()
+                          inputQuantity.error = "Quantidade não pode ser menor ou igual a zero!"
+
+                          error = true
+                      }
+                      quantity = inputQuantity.text!!.toString().toInt()
+                    }
+
+
+                    if (inputCost.text!!.isEmpty()){
+                        inputCost.requestFocus()
+                        inputCost.error = "Preencha o Custo"
+                        error = true
+                    }
+                    else
+                    {
+                        if (inputCost.text!!.toString().toInt() < 0){
+                            inputCost.requestFocus()
+                            inputCost.error = "Custo não pode ser menor que zero!"
+
+                            error = true
+                        }
+                        cost = inputCost.text!!.toString().toFloat()
+                    }
+
+
+                }
+
+
+
+            }
+
+
+            if (!error) {
+                viewModel.insertOrUpdateTransaction(
+                    id =       args.transaction?.id ?: 0,
+                    quantity = quantity,
+                    value =    value,
+                    cost =     cost,
+                    type =     viewModel.movementTypeSelected.value!!,
+                    date =     date
+                )
+            }
         }
     }
 
