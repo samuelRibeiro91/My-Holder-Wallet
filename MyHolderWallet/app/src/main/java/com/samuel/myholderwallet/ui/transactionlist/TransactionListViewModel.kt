@@ -33,6 +33,10 @@ class TransactionListViewModel(
     val messageStateEventData : LiveData<Int>
         get() = _messageStateEventData
 
+    fun getBrokers() = viewModelScope.launch {
+        _allBrokersEvent.postValue(brokerRepository.getAll())
+    }
+
     fun getTransactions() = viewModelScope.launch {
         _allTransactionsEvent.postValue(transactionRepository.getAllByBroker(brokerSelected.value?.id ?: 0))
     }

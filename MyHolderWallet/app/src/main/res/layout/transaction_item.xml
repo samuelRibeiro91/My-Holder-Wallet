@@ -47,7 +47,7 @@
 
 
                 <ImageButton
-                    android:id="@+id/paper_delete"
+                    android:id="@+id/transaction_delete"
                     android:src="@drawable/ic_baseline_delete_24"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
