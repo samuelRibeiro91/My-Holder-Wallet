@@ -20,13 +20,12 @@ import com.samuel.myholdertransaction.db.dao.TransactionDAO
 import com.samuel.myholderwallet.R
 import com.samuel.myholderwallet.db.AppDatabase
 import com.samuel.myholderwallet.db.dao.BrokerDAO
+import com.samuel.myholderwallet.db.dao.WalletDAO
 import com.samuel.myholderwallet.extension.navigateWithAnimations
-import com.samuel.myholderwallet.repository.BrokerRepository
-import com.samuel.myholderwallet.repository.BrokerRepositoryImpl
-import com.samuel.myholderwallet.repository.TransactionRepository
-import com.samuel.myholderwallet.repository.TransactionRepositoryImpl
+import com.samuel.myholderwallet.repository.*
 import com.samuel.myholderwallet.ui.paperlist.PaperListAdapter
 import com.samuel.myholderwallet.ui.paperlist.PaperListFragmentDirections
+import com.samuel.myholderwallet.usecases.TransactionCreditsValidateUseCase
 
 class TransactionListFragment : Fragment(R.layout.fragment_transaction_list) {
 
@@ -39,7 +38,12 @@ class TransactionListFragment : Fragment(R.layout.fragment_transaction_list) {
                 val brokerDAO: BrokerDAO = AppDatabase.getInstance(requireContext()).brokerDAO
                 val brokerRepository: BrokerRepository = BrokerRepositoryImpl(brokerDAO)
 
-                return TransactionListViewModel(transactionRepository, brokerRepository) as T
+                val walletDAO : WalletDAO = AppDatabase.getInstance(requireContext()).walletDAO
+                val walletRepository: WalletRepository = WalletRepositoryImpl(walletDAO)
+
+                val transactionCreditsValidateUseCase = TransactionCreditsValidateUseCase(walletRepository, requireContext())
+
+                return TransactionListViewModel(transactionRepository, brokerRepository, transactionCreditsValidateUseCase) as T
             }
         }
     }

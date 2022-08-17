@@ -10,11 +10,13 @@ import com.samuel.myholderwallet.db.entity.BrokerEntity
 import com.samuel.myholderwallet.db.entity.TransactionEntity
 import com.samuel.myholderwallet.repository.BrokerRepository
 import com.samuel.myholderwallet.repository.TransactionRepository
+import com.samuel.myholderwallet.usecases.TransactionCreditsValidateUseCase
 import kotlinx.coroutines.launch
 
 class TransactionListViewModel(
     private val transactionRepository: TransactionRepository,
-    private val brokerRepository: BrokerRepository
+    private val brokerRepository: BrokerRepository,
+    private val transactionCreditsValidateUseCase: TransactionCreditsValidateUseCase
 ) : ViewModel() {
 
     private val _allBrokersEvent = MutableLiveData<List<BrokerEntity>>()
@@ -41,10 +43,11 @@ class TransactionListViewModel(
         _allTransactionsEvent.postValue(transactionRepository.getAllByBroker(brokerSelected.value?.id ?: 0))
     }
 
-    fun deleteTransaction(Transaction: TransactionEntity?) = viewModelScope.launch {
+    fun deleteTransaction(transaction: TransactionEntity?) = viewModelScope.launch {
         try{
-            Transaction?.let {
-                transactionRepository.delete(Transaction)
+            transaction?.let {
+                transactionCreditsValidateUseCase.validateTransactionDelete(transaction)
+                transactionRepository.delete(transaction)
                 _messageStateEventData.value = R.string.transaction_deleted_sucessfully
             }
 

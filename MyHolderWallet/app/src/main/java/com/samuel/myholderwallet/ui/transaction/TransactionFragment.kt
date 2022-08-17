@@ -72,11 +72,6 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        args.transaction?.let { transactionEntity ->
-
-        }
-
         observeViewModelEvents()
 
         configureViewListeners()
@@ -84,15 +79,64 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
         observeEvents()
 
         requireView().findViewById<Spinner>(R.id.spinner_transaction_type).adapter =  ArrayAdapter(requireContext(), R.layout.spinneritem, R.id.spinnerText, MovementTypes.values())
+
+
+        args.transaction?.let { transactionEntity ->
+            //Broker
+            viewModel.allBrokersEvent.value?.forEach { brokerEntity ->
+                if (brokerEntity.id == transactionEntity.fk_broker){
+                    requireView().findViewById<Spinner>(R.id.spinner_broker).setSelection(viewModel.allBrokersEvent.value!!.indexOf(brokerEntity))
+                }
+            }
+            requireView().findViewById<Spinner>(R.id.spinner_broker).isEnabled = false
+
+            requireView().findViewById<Spinner>(R.id.spinner_transaction_type).setSelection(transactionEntity.type!!.ordinal)
+            requireView().findViewById<Spinner>(R.id.spinner_transaction_type).isEnabled = false
+
+            //Paper
+            viewModel.allPapersEvent.value?.forEach { paperEntity ->
+                if (paperEntity.id == transactionEntity.fk_paper){
+                    requireView().findViewById<Spinner>(R.id.spinner_paper).setSelection(viewModel.allPapersEvent.value!!.indexOf(paperEntity))
+                }
+            }
+
+            requireView().findViewById<TextInputEditText>(R.id.input_quantity)  .setText(transactionEntity.quantity.toString())
+            requireView().findViewById<TextInputEditText>(R.id.input_value)     .setText(transactionEntity.value.toString())
+            requireView().findViewById<TextInputEditText>(R.id.input_costs)     .setText(transactionEntity.cost.toString())
+
+            //Date
+            requireView().findViewById<TextInputEditText>(R.id.input_date)     .setText(SimpleDateFormat("dd/MM/yyyy").format(Date(transactionEntity.date.toLong())))
+        }
+
     }
 
     private fun observeViewModelEvents() {
         viewModel.allBrokersEvent.observe(viewLifecycleOwner) { list ->
             requireView().findViewById<Spinner>(R.id.spinner_broker).adapter =  ArrayAdapter(requireContext(), R.layout.spinneritem, R.id.spinnerText, list)
+
+            args.transaction?.let { transactionEntity ->
+                //Broker
+                viewModel.allBrokersEvent.value?.forEach { brokerEntity ->
+                    if (brokerEntity.id == transactionEntity.fk_broker) {
+                        requireView().findViewById<Spinner>(R.id.spinner_broker)
+                            .setSelection(viewModel.allBrokersEvent.value!!.indexOf(brokerEntity))
+                    }
+                }
+                requireView().findViewById<Spinner>(R.id.spinner_broker).isEnabled = false
+            }
+
         }
 
         viewModel.allPapersEvent.observe(viewLifecycleOwner){ list ->
             requireView().findViewById<Spinner>(R.id.spinner_paper).adapter =  ArrayAdapter(requireContext(), R.layout.spinneritem, R.id.spinnerText, list)
+
+            args.transaction?.let { transactionEntity ->
+                viewModel.allPapersEvent.value?.forEach { paperEntity ->
+                    if (paperEntity.id == transactionEntity.fk_paper){
+                        requireView().findViewById<Spinner>(R.id.spinner_paper).setSelection(viewModel.allPapersEvent.value!!.indexOf(paperEntity))
+                    }
+                }
+            }
         }
 
     }
@@ -253,7 +297,7 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
                     }
                     else
                     {
-                        if (inputCost.text!!.toString().toInt() < 0){
+                        if (inputCost.text!!.toString().toFloat() < 0){
                             inputCost.requestFocus()
                             inputCost.error = "Custo não pode ser menor que zero!"
 
@@ -312,7 +356,9 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
 
 
     private fun clearFields() {
-        //
+        requireView().findViewById<TextInputEditText>(R.id.input_quantity)?.text?.clear()
+        requireView().findViewById<TextInputEditText>(R.id.input_value)?.text?.clear()
+        requireView().findViewById<TextInputEditText>(R.id.input_costs)?.text?.clear()
     }
 
     private fun hideKeyBoard() {
