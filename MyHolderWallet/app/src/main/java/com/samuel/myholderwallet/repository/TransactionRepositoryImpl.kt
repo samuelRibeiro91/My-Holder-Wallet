@@ -19,4 +19,6 @@ class TransactionRepositoryImpl(private val transactionDAO: TransactionDAO): Tra
     override suspend fun update(transaction: TransactionEntity)  = transactionDAO.update(transaction)
 
     override suspend fun delete(transaction: TransactionEntity)  = transactionDAO.delete(transaction)
+
+    override suspend fun getQuantitiesOfPaperByBroker(brokerID: Long, paperID: Long) = transactionDAO.getQuantitiesOfPaperByBroker(brokerID, paperID)
 }

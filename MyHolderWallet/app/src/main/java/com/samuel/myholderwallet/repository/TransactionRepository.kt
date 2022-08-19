@@ -18,4 +18,6 @@ interface TransactionRepository {
     suspend fun update(transaction: TransactionEntity)
 
     suspend fun delete(transaction: TransactionEntity)
+
+    suspend fun getQuantitiesOfPaperByBroker(brokerID: Long, paperID: Long): Float
 }

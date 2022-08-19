@@ -7,8 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.samuel.myholderwallet.R
 import com.samuel.myholderwallet.db.entity.BrokerEntity
+import com.samuel.myholderwallet.db.entity.PaperEntity
 import com.samuel.myholderwallet.db.entity.TransactionEntity
 import com.samuel.myholderwallet.repository.BrokerRepository
+import com.samuel.myholderwallet.repository.PaperRepository
 import com.samuel.myholderwallet.repository.TransactionRepository
 import com.samuel.myholderwallet.usecases.TransactionCreditsValidateUseCase
 import kotlinx.coroutines.launch
@@ -16,6 +18,7 @@ import kotlinx.coroutines.launch
 class TransactionListViewModel(
     private val transactionRepository: TransactionRepository,
     private val brokerRepository: BrokerRepository,
+    private val paperRepository: PaperRepository,
     private val transactionCreditsValidateUseCase: TransactionCreditsValidateUseCase
 ) : ViewModel() {
 
@@ -23,6 +26,11 @@ class TransactionListViewModel(
 
     val allBrokersEvent: LiveData<List<BrokerEntity>>
         get() = _allBrokersEvent
+
+    private val _allPapersEvent = MutableLiveData<List<PaperEntity>>()
+
+    val allPapersEvent: LiveData<List<PaperEntity>>
+      get() = _allPapersEvent
 
     var brokerSelected = MutableLiveData<BrokerEntity>()
 
@@ -37,6 +45,10 @@ class TransactionListViewModel(
 
     fun getBrokers() = viewModelScope.launch {
         _allBrokersEvent.postValue(brokerRepository.getAll())
+    }
+
+    fun getPapers() = viewModelScope.launch {
+        _allPapersEvent.postValue(paperRepository.getAll())
     }
 
     fun getTransactions() = viewModelScope.launch {

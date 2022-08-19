@@ -32,6 +32,11 @@ class TransactionViewModel(
     val messageStateEventData : LiveData<Int>
         get() = _messageStateEventData
 
+
+    private val _errorMessageEventData = MutableLiveData<String>()
+    val errorMessageEventData : LiveData<String>
+      get() = _errorMessageEventData
+
     private val _allPapersEvent = MutableLiveData<List<PaperEntity>>()
 
     val allPapersEvent: LiveData<List<PaperEntity>>
@@ -48,7 +53,8 @@ class TransactionViewModel(
 
     var movementTypeSelected = MutableLiveData<MovementTypes>()
 
-    var oldValue = MutableLiveData<Float>()
+    var oldValue     = MutableLiveData<Float>()
+    var oldQuantity  = MutableLiveData<Int>()
 
     fun getPapers() = viewModelScope.launch {
         _allPapersEvent.postValue(paperRepository.getAll())
@@ -87,12 +93,28 @@ class TransactionViewModel(
 
     private fun updateTransaction(transactionEntity: TransactionEntity) = viewModelScope.launch{
         try {
-            transactionCreditsValidateUseCase.validateTransactionUpdate(transactionEntity, oldValue.value ?: 0.0f)
+            var processContinue = true
 
-            transactionRepository.update(transactionEntity)
+            if (transactionEntity.type == MovementTypes.SELL_PAPERS){
+                val actualValue = transactionRepository.getQuantitiesOfPaperByBroker(transactionEntity.fk_broker!!, transactionEntity.fk_paper!!).plus(oldQuantity.value!!)
 
-            _transactionStateEventData.value = TransactionState.Updated
-            _messageStateEventData.value = R.string.transaction_updated_sucessfully
+                if (transactionEntity.quantity > actualValue){
+                    processContinue = false
+                    _errorMessageEventData.value = "A quantidade atual de venda excede a quantidade total de compra do papel"
+                }
+            }
+
+            if (processContinue) {
+                transactionCreditsValidateUseCase.validateTransactionUpdate(
+                    transactionEntity,
+                    oldValue.value ?: 0.0f
+                )
+
+                transactionRepository.update(transactionEntity)
+
+                _transactionStateEventData.value = TransactionState.Updated
+                _messageStateEventData.value = R.string.transaction_updated_sucessfully
+            }
         }
         catch (ex: Exception){
             _messageStateEventData.value = R.string.transaction_error_to_update
@@ -102,12 +124,26 @@ class TransactionViewModel(
 
     private fun insertTransaction(transactionEntity: TransactionEntity) = viewModelScope.launch{
         try {
-            transactionCreditsValidateUseCase.validateTransactionInsert(transactionEntity)
+            var processContinue = true
 
-            transactionRepository.insert( transactionEntity)
+            if (transactionEntity.type == MovementTypes.SELL_PAPERS){
+                val actualValue = transactionRepository.getQuantitiesOfPaperByBroker(transactionEntity.fk_broker!!, transactionEntity.fk_paper!!)
 
-            _transactionStateEventData.value = TransactionState.Inserted
-            _messageStateEventData.value = R.string.transaction_inserted_sucessfully
+                if (transactionEntity.quantity > actualValue){
+                    processContinue = false
+                    _errorMessageEventData.value = "Venda de papel em quantidade superior a quantidade de compra"
+                }
+            }
+
+
+            if (processContinue) {
+                transactionCreditsValidateUseCase.validateTransactionInsert(transactionEntity)
+
+                transactionRepository.insert(transactionEntity)
+
+                _transactionStateEventData.value = TransactionState.Inserted
+                _messageStateEventData.value = R.string.transaction_inserted_sucessfully
+            }
         } catch (ex: Exception){
             _messageStateEventData.value = R.string.transaction_error_to_insert
             Log.e(TAG, ex.toString())

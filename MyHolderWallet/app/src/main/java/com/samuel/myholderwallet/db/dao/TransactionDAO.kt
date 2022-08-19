@@ -2,6 +2,8 @@ package com.samuel.myholdertransaction.db.dao
 
 import androidx.room.*
 import com.samuel.myholderwallet.db.entity.TransactionEntity
+import com.samuel.myholderwallet.types.MovementTypes
+import com.samuel.myholderwallet.types.MovementTypes.*
 
 @Dao
 interface TransactionDAO {
@@ -28,4 +30,7 @@ interface TransactionDAO {
 
     @Delete
     suspend fun delete(transaction: TransactionEntity)
+
+    @Query("select SUM(case type when 1 then quantity else quantity * -1 end)quantities from `transaction` where fk_broker = :brokerID and fk_paper = :paperID")
+    suspend fun getQuantitiesOfPaperByBroker(brokerID: Long, paperID: Long): Float
 }

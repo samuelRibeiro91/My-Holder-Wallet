@@ -38,7 +38,10 @@ class TransactionListAdapter(private val transactions: List<TransactionEntity>):
         fun bindView(transactionEntity: TransactionEntity){
             transactionDate.text   = SimpleDateFormat("dd/MM/yyyy").format(Date(transactionEntity.date.toLong()))
             transactionType.text   = transactionEntity.type.toString()
-            transactionValue.text  = "R$ "+ transactionEntity.value
+
+            val finalValue = transactionEntity.value * transactionEntity.quantity
+
+            transactionValue.text  = "R$ $finalValue"
 
             itemView.setOnClickListener{
                 onItemClick?.invoke(transactionEntity)

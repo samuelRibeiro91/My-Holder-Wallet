@@ -20,6 +20,7 @@ import com.samuel.myholdertransaction.db.dao.TransactionDAO
 import com.samuel.myholderwallet.R
 import com.samuel.myholderwallet.db.AppDatabase
 import com.samuel.myholderwallet.db.dao.BrokerDAO
+import com.samuel.myholderwallet.db.dao.PaperDAO
 import com.samuel.myholderwallet.db.dao.WalletDAO
 import com.samuel.myholderwallet.extension.navigateWithAnimations
 import com.samuel.myholderwallet.repository.*
@@ -38,12 +39,15 @@ class TransactionListFragment : Fragment(R.layout.fragment_transaction_list) {
                 val brokerDAO: BrokerDAO = AppDatabase.getInstance(requireContext()).brokerDAO
                 val brokerRepository: BrokerRepository = BrokerRepositoryImpl(brokerDAO)
 
+                val paperDAO: PaperDAO = AppDatabase.getInstance(requireContext()).paperDAO
+                val paperRepository: PaperRepository = PaperRepositoryImpl(paperDAO)
+
                 val walletDAO : WalletDAO = AppDatabase.getInstance(requireContext()).walletDAO
                 val walletRepository: WalletRepository = WalletRepositoryImpl(walletDAO)
 
                 val transactionCreditsValidateUseCase = TransactionCreditsValidateUseCase(walletRepository, requireContext())
 
-                return TransactionListViewModel(transactionRepository, brokerRepository, transactionCreditsValidateUseCase) as T
+                return TransactionListViewModel(transactionRepository, brokerRepository, paperRepository, transactionCreditsValidateUseCase) as T
             }
         }
     }
@@ -51,7 +55,7 @@ class TransactionListFragment : Fragment(R.layout.fragment_transaction_list) {
     override fun onResume() {
         super.onResume()
         viewModel.getBrokers()
-
+        viewModel.getPapers()
     }
 
 
@@ -116,7 +120,37 @@ class TransactionListFragment : Fragment(R.layout.fragment_transaction_list) {
 
     private fun configureViewListeners(){
         this.requireView().findViewById<FloatingActionButton>(R.id.faAddTransaction).setOnClickListener {
-            findNavController().navigateWithAnimations(R.id.action_transactionListFragment_to_transactionFragment)
+            var openRegisterTransaction = true
+
+            if (viewModel.allBrokersEvent.value!!.isEmpty()){
+                openRegisterTransaction = false
+
+                AlertDialog.Builder(context)
+                    .setTitle("Aviso")
+                    .setMessage("É necessário ter pelo menos uma corretora cadastrada")
+                    .setPositiveButton("Ok") { _, _ ->
+                        //
+                    }
+                    .create()
+                    .show()
+            }
+
+            if ((viewModel.allPapersEvent.value!!.isEmpty()) && (openRegisterTransaction)){
+                openRegisterTransaction = false
+
+                AlertDialog.Builder(context)
+                    .setTitle("Aviso")
+                    .setMessage("É necessário ter pelo menos um papel cadastrado")
+                    .setPositiveButton("Ok") { _, _ ->
+                        //
+                    }
+                    .create()
+                    .show()
+            }
+
+
+            if (openRegisterTransaction)
+                findNavController().navigateWithAnimations(R.id.action_transactionListFragment_to_transactionFragment)
         }
 
         requireView().findViewById<Spinner>(R.id.spinner_broker).onItemSelectedListener = object  : AdapterView.OnItemSelectedListener{

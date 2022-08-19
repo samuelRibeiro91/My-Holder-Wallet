@@ -1,5 +1,6 @@
 package com.samuel.myholderwallet.ui.transaction
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -99,6 +100,9 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
                     requireView().findViewById<Spinner>(R.id.spinner_paper).setSelection(viewModel.allPapersEvent.value!!.indexOf(paperEntity))
                 }
             }
+
+            viewModel.oldValue.value = transactionEntity.value
+            viewModel.oldQuantity.value = transactionEntity.quantity
 
             requireView().findViewById<TextInputEditText>(R.id.input_quantity)  .setText(transactionEntity.quantity.toString())
             requireView().findViewById<TextInputEditText>(R.id.input_value)     .setText(transactionEntity.value.toString())
@@ -351,6 +355,18 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
 
         viewModel.messageStateEventData.observe(viewLifecycleOwner){ stringResId ->
             Snackbar.make(requireView(), stringResId, Snackbar.LENGTH_LONG).show()
+        }
+
+        viewModel.errorMessageEventData.observe(viewLifecycleOwner){ message ->
+            AlertDialog.Builder(context)
+                .setTitle("Erro")
+                .setMessage(message)
+                .setPositiveButton("Ok") { _, _ ->
+                    //
+                }
+                .create()
+                .show()
+
         }
     }
 
