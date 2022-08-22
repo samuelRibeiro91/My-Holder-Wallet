@@ -82,11 +82,12 @@
                                 android:textStyle="bold" />
 
                             <TextView
+                                android:id="@+id/tv_total_value"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_marginRight="10dp"
                                 android:gravity="end"
-                                android:text="R$ 1000,00"
+                                android:text="R$ 0,00"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
 
@@ -110,11 +111,12 @@
                                 android:textStyle="bold" />
 
                             <TextView
+                                android:id="@+id/tv_total_stock"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_marginRight="10dp"
                                 android:gravity="end"
-                                android:text="R$ 1000,00"
+                                android:text="R$ 0,00"
                                 android:textSize="12sp" />
 
 
@@ -136,11 +138,12 @@
                                 android:textStyle="bold" />
 
                             <TextView
+                                android:id="@+id/tv_total_reit"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_marginRight="10dp"
                                 android:gravity="end"
-                                android:text="R$ 1000,00"
+                                android:text="R$ 0,00"
                                 android:textSize="12sp" />
 
 
@@ -162,11 +165,12 @@
                                 android:textStyle="bold" />
 
                             <TextView
+                                android:id="@+id/tv_total_adr"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_marginRight="10dp"
                                 android:gravity="end"
-                                android:text="R$ 1000,00"
+                                android:text="R$ 0,00"
                                 android:textSize="12sp" />
 
 
@@ -189,11 +193,13 @@
                                 android:textStyle="bold" />
 
                             <TextView
+                                android:id="@+id/tv_account_ballance"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_marginRight="10dp"
                                 android:gravity="end"
-                                android:text="R$ 1000,00"
+                                android:text="R$ 0,00"
+                                tools:text="R$ 0,00"
                                 android:textSize="12sp" />
 
 

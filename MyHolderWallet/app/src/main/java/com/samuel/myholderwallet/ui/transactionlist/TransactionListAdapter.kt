@@ -43,7 +43,7 @@ class TransactionListAdapter(private val transactions: List<TransactionEntity>):
             val finalValue = transactionEntity.value * transactionEntity.quantity
 
 
-            transactionValue.text  = "R$ ${finalValue}"
+            transactionValue.text  = "R$ ${String.format("%.2f",finalValue)}"
 
             itemView.setOnClickListener{
                 onItemClick?.invoke(transactionEntity)

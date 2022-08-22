@@ -35,13 +35,13 @@ interface TransactionDAO {
     suspend fun getQuantitiesOfPaperByBroker(brokerID: Long, paperID: Long): Float
 
 
-    @Query( "select SUM(case `transaction`.type when 0 then value " +
+    @Query( "select coalesce(SUM(case `transaction`.type when 0 then value " +
             "                    when 1 then ((value * quantity) + cost) * -1 " +
             "                    when 2 then value -cost" +
             "                    when 3 then (value -cost) * -1 " +
             "                    when 4 then ((value * quantity) - cost) " +
             "                    else 0 " +
-            " end)account_balance " +
+            " end), 0)account_balance " +
             "FROM `transaction` " +
             "where fk_broker = :brokerID")
     suspend fun getAccountBalanceByBroker(brokerID: Long): Float
@@ -49,7 +49,7 @@ interface TransactionDAO {
 
 
     @Query("select " +
-            "    SUM(case `transaction`.type " +
+            "    coalesce(SUM(case `transaction`.type " +
             "                    when 1 then ((value * quantity))  " +
             "                    when 4  then ((coalesce((select  " +
             "                                       sum(transac.value * transac.quantity) / sum(transac.quantity)average_paper " +
@@ -57,7 +57,7 @@ interface TransactionDAO {
             "                                         inner join paper pp on (pp.id = transac.fk_paper) " +
             "                                         where transac.type = 1 and transac.fk_broker = `transaction`.fk_broker and pp.id = paper.id " +
             "                                        ),0) * `transaction`.quantity) * -1) " +
-            "                  end)total_stocks " +
+            "                  end), 0)total_stocks " +
             "FROM `transaction` " +
             "inner join paper on (paper.id = `transaction`.fk_paper) " +
             "where `transaction`.fk_broker = :brokerID and `transaction`.type in (1,4) and paper.type = 0")
@@ -65,7 +65,7 @@ interface TransactionDAO {
 
 
     @Query("select " +
-            "    SUM(case `transaction`.type " +
+            "    coalesce(SUM(case `transaction`.type " +
             "                    when 1 then ((value * quantity))  " +
             "                    when 4  then ((coalesce((select  " +
             "                                       sum(transac.value * transac.quantity) / sum(transac.quantity)average_paper " +
@@ -73,14 +73,14 @@ interface TransactionDAO {
             "                                         inner join paper pp on (pp.id = transac.fk_paper) " +
             "                                         where transac.type = 1 and transac.fk_broker = `transaction`.fk_broker and pp.id = paper.id " +
             "                                        ),0) * `transaction`.quantity) * -1) " +
-            "                  end)total_reits " +
+            "                  end), 0)total_reits " +
             "FROM `transaction` " +
             "inner join paper on (paper.id = `transaction`.fk_paper) " +
             "where `transaction`.fk_broker = :brokerID and `transaction`.type in (1,4) and paper.type = 1")
     suspend fun getTotalReitsByBroker(brokerID: Long): Float
 
     @Query("select " +
-            "    SUM(case `transaction`.type " +
+            "    coalesce(SUM(case `transaction`.type " +
             "                    when 1 then ((value * quantity))  " +
             "                    when 4  then ((coalesce((select  " +
             "                                       sum(transac.value * transac.quantity) / sum(transac.quantity)average_paper " +
@@ -88,7 +88,7 @@ interface TransactionDAO {
             "                                         inner join paper pp on (pp.id = transac.fk_paper) " +
             "                                         where transac.type = 1 and transac.fk_broker = `transaction`.fk_broker and pp.id = paper.id " +
             "                                        ),0) * `transaction`.quantity) * -1) " +
-            "                  end)total_adrs " +
+            "                  end), 0)total_adrs " +
             "FROM `transaction` " +
             "inner join paper on (paper.id = `transaction`.fk_paper) " +
             "where `transaction`.fk_broker = :brokerID and `transaction`.type in (1,4) and paper.type = 2")
