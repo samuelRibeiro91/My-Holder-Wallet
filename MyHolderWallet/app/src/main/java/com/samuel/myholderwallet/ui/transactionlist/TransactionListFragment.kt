@@ -70,7 +70,7 @@ class TransactionListFragment : Fragment(R.layout.fragment_transaction_list) {
 
     private fun observeViewModelEvents() {
         viewModel.allBrokersEvent.observe(viewLifecycleOwner) { list ->
-            requireView().findViewById<Spinner>(R.id.spinner_broker).adapter =  ArrayAdapter(requireContext(), R.layout.spinneritem, R.id.spinnerText, list)
+            requireView().findViewById<Spinner>(R.id.spinner_broker).adapter =  ArrayAdapter(requireContext(), R.layout.spinnerbolditem, R.id.spinnerText, list)
         }
 
         viewModel.brokerSelected.observe(viewLifecycleOwner){

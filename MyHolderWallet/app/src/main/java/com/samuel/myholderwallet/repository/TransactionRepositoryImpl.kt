@@ -21,4 +21,12 @@ class TransactionRepositoryImpl(private val transactionDAO: TransactionDAO): Tra
     override suspend fun delete(transaction: TransactionEntity)  = transactionDAO.delete(transaction)
 
     override suspend fun getQuantitiesOfPaperByBroker(brokerID: Long, paperID: Long) = transactionDAO.getQuantitiesOfPaperByBroker(brokerID, paperID)
+
+    override suspend fun getAccountBalanceByBroker(brokerID: Long) = transactionDAO.getAccountBalanceByBroker(brokerID) //Saldo em conta
+
+    override suspend fun getTotalStockByBroker(brokerID: Long): Float  = transactionDAO.getTotalStockByBroker(brokerID)
+
+    override suspend fun getTotalReitsByBroker(brokerID: Long): Float = transactionDAO.getTotalReitsByBroker(brokerID)
+
+    override suspend fun getTotalAdrsByBroker(brokerID: Long): Float  = transactionDAO.getTotalAdrsByBroker(brokerID)
 }

@@ -5,7 +5,6 @@
     <string name="my_wallet_title">Minha Carteira Holder</string>
 
 
-
     <string name="list_papers">Lista de Papéis</string>
     <string name="papers">Papéis</string>
     <string name="paper">Papel</string>
@@ -33,7 +32,6 @@
     <string name="paper_error_to_update">Ocorreu um erro ao atualizar o papel!</string>
     <string name="paper_deleted_sucessfully">Papel excluido com sucesso!</string>
     <string name="paper_error_to_delete">Ocorreu um erro ao excluir o papel!</string>
-
 
 
     <string name="transaction_inserted_sucessfully">Transação cadastrada com sucesso!</string>
