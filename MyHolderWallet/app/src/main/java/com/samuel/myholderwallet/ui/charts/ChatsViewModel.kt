@@ -51,15 +51,21 @@ class ChatsViewModel(
     }
 
     fun getData() = viewModelScope.launch {
+        val accountBalance = transactionRepository.getAccountBalanceByBroker(brokerSelected.value!!.id)
+        val totalAdrs      = transactionRepository.getTotalAdrsByBroker(brokerSelected.value!!.id)
+        val totalStock     = transactionRepository.getTotalStockByBroker(brokerSelected.value!!.id)
+        val totalReits     = transactionRepository.getTotalReitsByBroker(brokerSelected.value!!.id)
+
+
         _accountBalance.postValue(transactionRepository.getAccountBalanceByBroker(brokerSelected.value!!.id))
 
-        _totalAdrsValue.postValue(transactionRepository.getTotalAdrsByBroker(brokerSelected.value!!.id))
+        _totalAdrsValue.postValue(totalAdrs ?: 0.0f)
 
-        _totalStockValue.postValue(transactionRepository.getTotalStockByBroker(brokerSelected.value!!.id))
+        _totalStockValue.postValue(totalStock ?: 0.0f)
 
-        _totalReitsValue.postValue(transactionRepository.getTotalReitsByBroker(brokerSelected.value!!.id))
+        _totalReitsValue.postValue(totalReits ?: 0.0f)
 
-        _totalValue.postValue((_accountBalance.value ?: 0.0f ) + (_totalStockValue.value ?: 0.0f )+ (_totalAdrsValue.value ?: 0.0f ) + (_totalReitsValue.value ?: 0.0f ))
+        _totalValue.postValue((accountBalance ?: 0.0f ) + (totalStock ?: 0.0f )+ (totalAdrs ?: 0.0f ) + (totalReits ?: 0.0f ))
     }
 
 }
