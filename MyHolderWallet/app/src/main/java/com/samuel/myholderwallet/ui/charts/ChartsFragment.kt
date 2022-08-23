@@ -1,5 +1,7 @@
 package com.samuel.myholderwallet.ui.charts
 
+import android.R.attr.data
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -11,6 +13,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.PercentFormatter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.samuel.myholdertransaction.db.dao.TransactionDAO
 import com.samuel.myholderwallet.R
@@ -21,6 +29,8 @@ import com.samuel.myholderwallet.repository.BrokerRepository
 import com.samuel.myholderwallet.repository.BrokerRepositoryImpl
 import com.samuel.myholderwallet.repository.TransactionRepository
 import com.samuel.myholderwallet.repository.TransactionRepositoryImpl
+import java.text.DecimalFormat
+
 
 class ChartsFragment : Fragment(R.layout.fragment_charts) {
     private val viewModel: ChatsViewModel by viewModels {
@@ -78,8 +88,57 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
         viewModel.totalValue.observe(viewLifecycleOwner){
             requireView().findViewById<TextView>(R.id.tv_total_value).text = "R$ ${String.format("%.2f",it)}"
+
+            setInvestmentsChart()
         }
 
+    }
+
+    private fun setInvestmentsChart(){
+        val pieChart = requireView().findViewById<PieChart>(R.id.cht_total_by_types)
+
+        val entries = ArrayList<PieEntry>()
+
+        entries.add(PieEntry(viewModel.totalStockValue.value  ?: 0.0f, "Ações"))
+        entries.add(PieEntry(viewModel.totalReitsValue.value  ?: 0.0f, "FIIs"))
+        entries.add(PieEntry(viewModel.totalAdrsValue.value  ?: 0.0f, "Bdrs"))
+
+        val dataSet = PieDataSet( entries, "")
+
+        val colors = ArrayList<Int>()
+
+        colors.add(Color.parseColor("#6eeb83"))
+        colors.add(Color.parseColor("#1be7ff"))
+        colors.add(Color.parseColor("#f49f0a"))
+
+        dataSet.colors = colors
+
+        pieChart.description.isEnabled = false
+
+        val pieData = PieData(dataSet)
+
+        var formart = PercentFormatter()
+        formart.mFormat = DecimalFormat("###,###,##0.00")
+
+        pieData.setValueFormatter(formart)
+        pieChart.data = pieData
+
+
+        val l: Legend = pieChart.legend
+        l.verticalAlignment = Legend.LegendVerticalAlignment.TOP
+        l.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+        l.orientation = Legend.LegendOrientation.VERTICAL
+        l.setDrawInside(false)
+        l.xEntrySpace = 7f
+        l.yEntrySpace = 0f
+        l.yOffset = 0f
+
+        pieChart.holeRadius = 58f
+        pieChart.transparentCircleRadius =61f
+
+        pieChart.setUsePercentValues(true)
+
+        pieChart.invalidate()
     }
 
     private fun configureViewListeners() {
