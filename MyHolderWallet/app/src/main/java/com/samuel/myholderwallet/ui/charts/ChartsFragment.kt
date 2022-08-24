@@ -2,6 +2,7 @@ package com.samuel.myholderwallet.ui.charts
 
 import android.R.attr.data
 import android.graphics.Color
+import android.graphics.Typeface.NORMAL
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -99,9 +100,9 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
         val entries = ArrayList<PieEntry>()
 
-        entries.add(PieEntry(viewModel.totalStockValue.value  ?: 0.0f, "Ações"))
-        entries.add(PieEntry(viewModel.totalReitsValue.value  ?: 0.0f, "FIIs"))
-        entries.add(PieEntry(viewModel.totalAdrsValue.value  ?: 0.0f, "Bdrs"))
+        if  (viewModel.totalStockValue.value  ?: 0.0f != 0.0f) entries.add(PieEntry(viewModel.totalStockValue.value  ?: 0.0f, "Ações"))
+        if  (viewModel.totalReitsValue.value  ?: 0.0f != 0.0f) entries.add(PieEntry(viewModel.totalReitsValue.value  ?: 0.0f, "FIIs"))
+        if  (viewModel.totalAdrsValue.value  ?: 0.0f != 0.0f) entries.add(PieEntry(viewModel.totalAdrsValue.value  ?: 0.0f, "Bdrs"))
 
         val dataSet = PieDataSet( entries, "")
 
@@ -129,6 +130,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         l.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
         l.orientation = Legend.LegendOrientation.VERTICAL
         l.setDrawInside(false)
+        l.textColor = Color.WHITE
         l.xEntrySpace = 7f
         l.yEntrySpace = 0f
         l.yOffset = 0f
@@ -137,6 +139,16 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         pieChart.transparentCircleRadius =61f
 
         pieChart.setUsePercentValues(true)
+
+        pieChart.isDrawHoleEnabled =true
+        pieChart.setHoleColor(Color.TRANSPARENT);
+
+        pieChart.setTransparentCircleColor(Color.WHITE)
+        pieChart.setTransparentCircleAlpha(110)
+
+
+        pieChart.setEntryLabelColor(Color.BLACK)
+        pieChart.setEntryLabelTextSize(12f)
 
         pieChart.invalidate()
     }
