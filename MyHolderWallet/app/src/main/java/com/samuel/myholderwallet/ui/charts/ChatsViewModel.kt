@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.samuel.myholderwallet.db.entity.BrokerEntity
+import com.samuel.myholderwallet.db.wrapper.DataTransactionsWrapperEntity
 import com.samuel.myholderwallet.db.wrapper.PaperValueWrapperEntity
 import com.samuel.myholderwallet.repository.BrokerRepository
 import com.samuel.myholderwallet.repository.TransactionRepository
@@ -25,7 +26,6 @@ class ChatsViewModel(
 
     val accountBalance: LiveData<Float>
         get() = _accountBalance
-
 
     private val _totalStockValue = MutableLiveData<Float>()
 
@@ -62,6 +62,16 @@ class ChatsViewModel(
     val adrWithValues: LiveData<List<PaperValueWrapperEntity>>
         get() = _adrWithValues
 
+    private val _dividendValues = MutableLiveData<List<DataTransactionsWrapperEntity>>()
+
+    val dividendValues: LiveData<List<DataTransactionsWrapperEntity>>
+        get() = _dividendValues
+
+    private val _buysAndUsedDividends = MutableLiveData<List<DataTransactionsWrapperEntity>>()
+
+    val buysAndUsedDividends: LiveData<List<DataTransactionsWrapperEntity>>
+        get() = _buysAndUsedDividends
+
     fun getBrokers() = viewModelScope.launch {
         _allBrokersEvent.postValue(brokerRepository.getAll())
     }
@@ -71,6 +81,9 @@ class ChatsViewModel(
         val totalAdrs      = transactionRepository.getTotalAdrsByBroker(brokerSelected.value!!.id)
         val totalStock     = transactionRepository.getTotalStockByBroker(brokerSelected.value!!.id)
         val totalReits     = transactionRepository.getTotalReitsByBroker(brokerSelected.value!!.id)
+
+        var initialValue: Long = 0
+        var endValue: Long = 0
 
         _adrWithValues  .postValue(transactionRepository.getAdrsWithValues(brokerSelected.value!!.id))
         _stockWithValues.postValue(transactionRepository.getStocksWithValues(brokerSelected.value!!.id))
@@ -85,6 +98,10 @@ class ChatsViewModel(
         _totalReitsValue.postValue(totalReits ?: 0.0f)
 
         _totalValue.postValue((accountBalance ?: 0.0f ) + (totalStock ?: 0.0f )+ (totalAdrs ?: 0.0f ) + (totalReits ?: 0.0f ))
+
+        _dividendValues.postValue(transactionRepository.getDividendsByDate(brokerSelected.value!!.id, initialValue, endValue))
+
+        _buysAndUsedDividends.postValue(transactionRepository.getBuysAndUsedDividendsByDate(brokerSelected.value!!.id, initialValue, endValue))
     }
 
 }

@@ -2,6 +2,7 @@ package com.samuel.myholdertransaction.db.dao
 
 import androidx.room.*
 import com.samuel.myholderwallet.db.entity.TransactionEntity
+import com.samuel.myholderwallet.db.wrapper.DataTransactionsWrapperEntity
 import com.samuel.myholderwallet.db.wrapper.PaperValueWrapperEntity
 
 @Dao
@@ -151,4 +152,30 @@ interface TransactionDAO {
             "group by 1 " +
             "order by 2")
     suspend fun getAdrsWithValues(brokerID: Long): List<PaperValueWrapperEntity>
+
+
+    @Query("select  " +
+            "strftime(' %m/%Y', `transaction`.date / 1000, 'unixepoch')date, " +
+            "sum(`transaction`.value)value, " +
+            "(0)credits " +
+            "from `transaction` " +
+            "where (`transaction`.fk_broker =  :brokerID) " +
+            "and  (`transaction`.type  = 2) " +
+            "and  ((`transaction`.date >= :initialValue) and (`transaction`.date <= :endValue)) " +
+            "group by 1")
+    suspend fun getDividendsByDate(brokerID: Long, initialValue:Long, endValue: Long): List<DataTransactionsWrapperEntity>
+
+    @Query("select  " +
+            "    strftime(' %m/%Y', `transaction`.date / 1000, 'unixepoch')date, " +
+            "    sum(case `transaction`.type when 1 then  `transaction`.quantity * `transaction`.value else (( `transaction`.quantity * `transaction`.value) * -10) end)value, " +
+            "    sum(`transaction`.credit)credits  " +
+            "from `transaction` " +
+            "where (`transaction`.fk_broker =  :brokerID) " +
+            "and  (`transaction`.type in (1,4)) " +
+            "and  ((`transaction`.date >= :initialValue) and (`transaction`.date <= :endValue)) " +
+            "group by 1 ")
+    suspend fun getBuysAndUsedDividendsByDate(brokerID: Long, initialValue:Long, endValue: Long): List<DataTransactionsWrapperEntity>
+
+
+
 }

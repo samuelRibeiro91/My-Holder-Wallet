@@ -14,17 +14,17 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Legend
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.samuel.myholdertransaction.db.dao.TransactionDAO
 import com.samuel.myholderwallet.R
 import com.samuel.myholderwallet.db.AppDatabase
 import com.samuel.myholderwallet.db.dao.BrokerDAO
+import com.samuel.myholderwallet.db.wrapper.DataTransactionsWrapperEntity
 import com.samuel.myholderwallet.db.wrapper.PaperValueWrapperEntity
 import com.samuel.myholderwallet.extension.navigateWithAnimations
 import com.samuel.myholderwallet.repository.BrokerRepository
@@ -94,6 +94,18 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             setInvestmentsChart()
         }
 
+        viewModel.dividendValues.observe(viewLifecycleOwner){
+            val colors = ArrayList<Int>()
+            colors.add(Color.parseColor("#81c784"))
+            colors.add(Color.parseColor("#4dd0e1"))
+            colors.add(Color.parseColor("#673ab7"))
+            colors.add(Color.parseColor("#3f51b5"))
+            colors.add(Color.parseColor("#b71c1c"))
+            colors.add(Color.parseColor("#880e4f"))
+
+            setDividendsChart(it, requireView().findViewById(R.id.cht_dividends), colors)
+        }
+
         viewModel.stockWithValues.observe(viewLifecycleOwner){
             val colors = ArrayList<Int>()
 
@@ -149,6 +161,49 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
                 setPaperChart(it, requireView().findViewById<PieChart>(R.id.cht_total_adr), colors)
         }
 
+    }
+
+    private fun setDividendsChart(list: List<DataTransactionsWrapperEntity>?, barChart: BarChart, colors: ArrayList<Int>){
+        val entries = ArrayList<BarEntry>()
+
+        list!!.forEach {
+            entries.add(BarEntry(it.value, it.value))
+        }
+
+
+        val dataSet = BarDataSet( entries, "")
+
+        dataSet.colors = colors
+
+        barChart.description.isEnabled = false
+        barChart.description.textColor = Color.WHITE
+
+        val barData = BarData()
+
+        barData.addDataSet(dataSet)
+
+        var formart = PercentFormatter()
+        formart.mFormat = DecimalFormat("###,###,##0.00")
+
+        barData.setValueFormatter(formart)
+        barChart.data = barData
+
+       /* barChart.holeRadius = 58f
+        barChart.transparentCircleRadius =61f
+
+        barChart.setUsePercentValues(true)
+
+        barChart.isDrawHoleEnabled =true
+        barChart.setHoleColor(Color.TRANSPARENT);
+
+        barChart.setTransparentCircleColor(Color.WHITE)
+        barChart.setTransparentCircleAlpha(110)
+
+
+        barChart.setEntryLabelColor(Color.WHITE)
+        barChart.setEntryLabelTextSize(14f)*/
+
+        barChart.invalidate()
     }
 
     private fun setPaperChart(list: List<PaperValueWrapperEntity>?, pieChart: PieChart, colors: ArrayList<Int>) {
