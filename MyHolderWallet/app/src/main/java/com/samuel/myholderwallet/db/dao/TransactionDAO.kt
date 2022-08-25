@@ -2,8 +2,7 @@ package com.samuel.myholdertransaction.db.dao
 
 import androidx.room.*
 import com.samuel.myholderwallet.db.entity.TransactionEntity
-import com.samuel.myholderwallet.types.MovementTypes
-import com.samuel.myholderwallet.types.MovementTypes.*
+import com.samuel.myholderwallet.db.wrapper.PaperValueWrapperEntity
 
 @Dao
 interface TransactionDAO {
@@ -93,4 +92,63 @@ interface TransactionDAO {
             "inner join paper on (paper.id = `transaction`.fk_paper) " +
             "where `transaction`.fk_broker = :brokerID and `transaction`.type in (1,4) and paper.type = 2")
     suspend fun getTotalAdrsByBroker(brokerID: Long): Float
+    
+    
+    
+    
+    @Query("select " +
+            "    paper.description," +
+            "    coalesce(SUM(case `transaction`.type " +
+            "                    when 1 then ((value * quantity))  " +
+            "                    when 4  then ((coalesce((select  " +
+            "                                       sum(transac.value * transac.quantity) / sum(transac.quantity)average_paper " +
+            "                                         FROM `transaction` transac " +
+            "                                         inner join paper pp on (pp.id = transac.fk_paper) " +
+            "                                         where transac.type = 1 and transac.fk_broker = `transaction`.fk_broker and pp.id = paper.id " +
+            "                                        ),0) * `transaction`.quantity) * -1) " +
+            "                  end), 0)value " +
+            "FROM `transaction` " +
+            "inner join paper on (paper.id = `transaction`.fk_paper) " +
+            "where `transaction`.fk_broker = :brokerID and `transaction`.type in (1,4) and paper.type = 0 " +
+            "group by 1 " +
+            "order by 2")
+    suspend fun getStocksWithValues(brokerID: Long): List<PaperValueWrapperEntity>
+
+
+    @Query("select " +
+            "    paper.description," +
+            "    coalesce(SUM(case `transaction`.type " +
+            "                    when 1 then ((value * quantity))  " +
+            "                    when 4  then ((coalesce((select  " +
+            "                                       sum(transac.value * transac.quantity) / sum(transac.quantity)average_paper " +
+            "                                         FROM `transaction` transac " +
+            "                                         inner join paper pp on (pp.id = transac.fk_paper) " +
+            "                                         where transac.type = 1 and transac.fk_broker = `transaction`.fk_broker and pp.id = paper.id " +
+            "                                        ),0) * `transaction`.quantity) * -1) " +
+            "                  end), 0)value " +
+            "FROM `transaction` " +
+            "inner join paper on (paper.id = `transaction`.fk_paper) " +
+            "where `transaction`.fk_broker = :brokerID and `transaction`.type in (1,4) and paper.type = 1 " +
+            "group by 1 " +
+            "order by 2")
+    suspend fun getReitsWithValues(brokerID: Long): List<PaperValueWrapperEntity>
+
+
+    @Query("select " +
+            "    paper.description," +
+            "    coalesce(SUM(case `transaction`.type " +
+            "                    when 1 then ((value * quantity))  " +
+            "                    when 4  then ((coalesce((select  " +
+            "                                       sum(transac.value * transac.quantity) / sum(transac.quantity)average_paper " +
+            "                                         FROM `transaction` transac " +
+            "                                         inner join paper pp on (pp.id = transac.fk_paper) " +
+            "                                         where transac.type = 1 and transac.fk_broker = `transaction`.fk_broker and pp.id = paper.id " +
+            "                                        ),0) * `transaction`.quantity) * -1) " +
+            "                  end), 0)value " +
+            "FROM `transaction` " +
+            "inner join paper on (paper.id = `transaction`.fk_paper) " +
+            "where `transaction`.fk_broker = :brokerID and `transaction`.type in (1,4) and paper.type = 2 " +
+            "group by 1 " +
+            "order by 2")
+    suspend fun getAdrsWithValues(brokerID: Long): List<PaperValueWrapperEntity>
 }

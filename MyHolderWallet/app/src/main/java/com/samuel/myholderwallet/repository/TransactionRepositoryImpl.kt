@@ -2,6 +2,7 @@ package com.samuel.myholderwallet.repository
 
 import com.samuel.myholdertransaction.db.dao.TransactionDAO
 import com.samuel.myholderwallet.db.entity.TransactionEntity
+import com.samuel.myholderwallet.db.wrapper.PaperValueWrapperEntity
 
 class TransactionRepositoryImpl(private val transactionDAO: TransactionDAO): TransactionRepository {
     override suspend fun get(id: Long): TransactionEntity = transactionDAO.get(id)
@@ -29,4 +30,10 @@ class TransactionRepositoryImpl(private val transactionDAO: TransactionDAO): Tra
     override suspend fun getTotalReitsByBroker(brokerID: Long): Float = transactionDAO.getTotalReitsByBroker(brokerID)
 
     override suspend fun getTotalAdrsByBroker(brokerID: Long): Float  = transactionDAO.getTotalAdrsByBroker(brokerID)
+
+    override suspend fun getStocksWithValues(brokerID: Long): List<PaperValueWrapperEntity>  = transactionDAO.getStocksWithValues(brokerID)
+
+    override suspend fun getReitsWithValues(brokerID: Long): List<PaperValueWrapperEntity>  = transactionDAO.getReitsWithValues(brokerID)
+
+    override suspend fun getAdrsWithValues(brokerID: Long): List<PaperValueWrapperEntity>  = transactionDAO.getAdrsWithValues(brokerID)
 }

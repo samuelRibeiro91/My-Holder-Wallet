@@ -66,9 +66,9 @@
                     android:id="@+id/cv_totals"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="50dp"
                     android:layout_marginBottom="8dp"
                     app:cardCornerRadius="5dp"
                     android:elevation="10dp"
@@ -114,12 +114,21 @@
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/v_line_2"
+                            android:layout_width="match_parent"
+                            android:layout_marginTop="5dp"
+                            android:layout_height="1dp"
+                            android:background="?attr/colorPrimaryVariant"
+                            app:layout_constraintTop_toBottomOf="@id/ll_total"
+                            android:orientation="horizontal" />
+
+                        <LinearLayout
                             android:id="@+id/ll_total_acoes"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:orientation="horizontal"
-                            app:layout_constraintTop_toBottomOf="@id/ll_total">
+                            app:layout_constraintTop_toBottomOf="@id/v_line_2">
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -230,6 +239,16 @@
 
                 </androidx.cardview.widget.CardView>
 
+                <TextView
+                    android:id="@+id/tv_stock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ações"
+                    android:layout_marginTop="40dp"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cv_totals"/>
+
 
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/cht_total_stock"
@@ -238,10 +257,13 @@
                     app:layout_constraintTop_toBottomOf="@id/cv_totals"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    android:layout_marginTop="20dp"
+
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     />
+
+
+
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/cht_total_reit"
                     android:layout_width="match_parent"
@@ -249,7 +271,7 @@
                     app:layout_constraintTop_toBottomOf="@id/cht_total_stock"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="40dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     />
@@ -261,7 +283,7 @@
                     app:layout_constraintTop_toBottomOf="@id/cht_total_reit"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="40dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     />

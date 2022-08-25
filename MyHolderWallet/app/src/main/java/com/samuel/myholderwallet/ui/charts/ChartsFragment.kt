@@ -25,6 +25,7 @@ import com.samuel.myholdertransaction.db.dao.TransactionDAO
 import com.samuel.myholderwallet.R
 import com.samuel.myholderwallet.db.AppDatabase
 import com.samuel.myholderwallet.db.dao.BrokerDAO
+import com.samuel.myholderwallet.db.wrapper.PaperValueWrapperEntity
 import com.samuel.myholderwallet.extension.navigateWithAnimations
 import com.samuel.myholderwallet.repository.BrokerRepository
 import com.samuel.myholderwallet.repository.BrokerRepositoryImpl
@@ -93,6 +94,137 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             setInvestmentsChart()
         }
 
+        viewModel.stockWithValues.observe(viewLifecycleOwner){
+            val colors = ArrayList<Int>()
+
+            colors.add(Color.parseColor("#673ab7"))
+            colors.add(Color.parseColor("#3f51b5"))
+            colors.add(Color.parseColor("#2196f3"))
+            colors.add(Color.parseColor("#03a9f4"))
+            colors.add(Color.parseColor("#00bcd4"))
+            colors.add(Color.parseColor("#009688"))
+            colors.add(Color.parseColor("#4caf50"))
+            colors.add(Color.parseColor("#8bc34a"))
+            colors.add(Color.parseColor("#cddc39"))
+            colors.add(Color.parseColor("#ff5722"))
+
+            if (it.isNotEmpty())
+                setPaperChart(it, requireView().findViewById<PieChart>(R.id.cht_total_stock), colors)
+        }
+
+        viewModel.reitWithValues.observe(viewLifecycleOwner){
+            val colors = ArrayList<Int>()
+
+            colors.add(Color.parseColor("#90a4ae"))
+            colors.add(Color.parseColor("#4db6ac"))
+            colors.add(Color.parseColor("#ff8a65"))
+            colors.add(Color.parseColor("#4fc3f7"))
+            colors.add(Color.parseColor("#a1887f"))
+            colors.add(Color.parseColor("#fff176"))
+            colors.add(Color.parseColor("#aed581"))
+            colors.add(Color.parseColor("#ffd54f"))
+            colors.add(Color.parseColor("#81c784"))
+            colors.add(Color.parseColor("#4dd0e1"))
+
+
+            if (it.isNotEmpty())
+                setPaperChart(it, requireView().findViewById<PieChart>(R.id.cht_total_reit), colors)
+        }
+
+        viewModel.adrWithValues.observe(viewLifecycleOwner){
+            val colors = ArrayList<Int>()
+
+            colors.add(Color.parseColor("#b71c1c"))
+            colors.add(Color.parseColor("#880e4f"))
+            colors.add(Color.parseColor("#880e4f"))
+            colors.add(Color.parseColor("#311b92"))
+            colors.add(Color.parseColor("#01579b"))
+            colors.add(Color.parseColor("#006064"))
+            colors.add(Color.parseColor("#304ffe"))
+            colors.add(Color.parseColor("#004d40"))
+            colors.add(Color.parseColor("#827717"))
+            colors.add(Color.parseColor("#33691e"))
+
+            if (it.isNotEmpty())
+                setPaperChart(it, requireView().findViewById<PieChart>(R.id.cht_total_adr), colors)
+        }
+
+    }
+
+    private fun setPaperChart(list: List<PaperValueWrapperEntity>?, pieChart: PieChart, colors: ArrayList<Int>) {
+        val entries = ArrayList<PieEntry>()
+
+
+        if (list!!.size <=5){
+            list!!.forEach {
+                if (it.value > 0.0f)
+                    entries.add(PieEntry(it.value, it.description))
+            }
+        }
+        else
+        {
+            var count = 0
+            var othersValue = 0.0f
+
+            list!!.forEach {
+                if ((it.value > 0.0f) && (count < 5)) {
+                    entries.add(PieEntry(it.value, it.description))
+                    count += 1
+                } else
+                {
+                    othersValue = it.value
+                }
+            }
+
+            if (othersValue > 0){
+                entries.add(PieEntry(othersValue, "Outros"))
+            }
+        }
+
+
+        val dataSet = PieDataSet( entries, "")
+
+        dataSet.colors = colors
+
+        pieChart.description.isEnabled = false
+        pieChart.description.textColor = Color.WHITE
+
+        val pieData = PieData(dataSet)
+
+        var formart = PercentFormatter()
+        formart.mFormat = DecimalFormat("###,###,##0.00")
+
+        pieData.setValueFormatter(formart)
+        pieChart.data = pieData
+
+
+        val l: Legend = pieChart.legend
+        l.verticalAlignment = Legend.LegendVerticalAlignment.TOP
+        l.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+        l.orientation = Legend.LegendOrientation.VERTICAL
+        l.setDrawInside(false)
+        l.textColor = Color.WHITE
+        l.xEntrySpace = 7f
+        l.yEntrySpace = 0f
+        l.yOffset = 0f
+
+        pieChart.holeRadius = 58f
+        pieChart.transparentCircleRadius =61f
+
+        pieChart.setUsePercentValues(true)
+
+        pieChart.isDrawHoleEnabled =true
+        pieChart.setHoleColor(Color.TRANSPARENT);
+
+        pieChart.setTransparentCircleColor(Color.WHITE)
+        pieChart.setTransparentCircleAlpha(110)
+
+
+        pieChart.setEntryLabelColor(Color.WHITE)
+        pieChart.setEntryLabelTextSize(14f)
+
+        pieChart.invalidate()
+
     }
 
     private fun setInvestmentsChart(){
@@ -147,8 +279,8 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         pieChart.setTransparentCircleAlpha(110)
 
 
-        pieChart.setEntryLabelColor(Color.BLACK)
-        pieChart.setEntryLabelTextSize(12f)
+        pieChart.setEntryLabelColor(Color.WHITE)
+        pieChart.setEntryLabelTextSize(14f)
 
         pieChart.invalidate()
     }

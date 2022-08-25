@@ -1,6 +1,7 @@
 package com.samuel.myholderwallet.repository
 
 import com.samuel.myholderwallet.db.entity.TransactionEntity
+import com.samuel.myholderwallet.db.wrapper.PaperValueWrapperEntity
 
 interface TransactionRepository {
     suspend fun get(id: Long): TransactionEntity
@@ -28,4 +29,10 @@ interface TransactionRepository {
     suspend fun getTotalReitsByBroker(brokerID: Long): Float
 
     suspend fun getTotalAdrsByBroker(brokerID: Long): Float
+
+    suspend fun getStocksWithValues(brokerID: Long): List<PaperValueWrapperEntity>
+
+    suspend fun getReitsWithValues(brokerID: Long): List<PaperValueWrapperEntity>
+
+    suspend fun getAdrsWithValues(brokerID: Long): List<PaperValueWrapperEntity>
 }

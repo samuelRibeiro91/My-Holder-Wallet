@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.samuel.myholderwallet.db.entity.BrokerEntity
+import com.samuel.myholderwallet.db.wrapper.PaperValueWrapperEntity
 import com.samuel.myholderwallet.repository.BrokerRepository
 import com.samuel.myholderwallet.repository.TransactionRepository
 import kotlinx.coroutines.launch
@@ -46,6 +47,21 @@ class ChatsViewModel(
     val totalValue: LiveData<Float>
       get() = _totalValue
 
+    private val _stockWithValues = MutableLiveData<List<PaperValueWrapperEntity>>()
+
+    val stockWithValues: LiveData<List<PaperValueWrapperEntity>>
+       get() = _stockWithValues
+
+    private val _reitWithValues = MutableLiveData<List<PaperValueWrapperEntity>>()
+
+    val reitWithValues: LiveData<List<PaperValueWrapperEntity>>
+        get() = _reitWithValues
+
+    private val _adrWithValues = MutableLiveData<List<PaperValueWrapperEntity>>()
+
+    val adrWithValues: LiveData<List<PaperValueWrapperEntity>>
+        get() = _adrWithValues
+
     fun getBrokers() = viewModelScope.launch {
         _allBrokersEvent.postValue(brokerRepository.getAll())
     }
@@ -56,6 +72,9 @@ class ChatsViewModel(
         val totalStock     = transactionRepository.getTotalStockByBroker(brokerSelected.value!!.id)
         val totalReits     = transactionRepository.getTotalReitsByBroker(brokerSelected.value!!.id)
 
+        _adrWithValues  .postValue(transactionRepository.getAdrsWithValues(brokerSelected.value!!.id))
+        _stockWithValues.postValue(transactionRepository.getStocksWithValues(brokerSelected.value!!.id))
+        _reitWithValues .postValue(transactionRepository.getReitsWithValues(brokerSelected.value!!.id))
 
         _accountBalance.postValue(transactionRepository.getAccountBalanceByBroker(brokerSelected.value!!.id))
 
