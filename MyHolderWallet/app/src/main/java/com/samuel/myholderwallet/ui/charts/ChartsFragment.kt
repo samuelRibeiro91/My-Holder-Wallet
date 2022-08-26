@@ -107,6 +107,14 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             setDividendsChart(it, requireView().findViewById(R.id.cht_dividends), colors)
         }
 
+        viewModel.buysAndUsedDividends.observe(viewLifecycleOwner){
+            val colors = ArrayList<Int>()
+            colors.add(Color.parseColor("#880e4f"))
+            colors.add(Color.parseColor("#b71c1c"))
+
+            setBuysAndUsedDividendsChart(it, requireView().findViewById(R.id.cht_buy_and_dividends), colors)
+        }
+
         viewModel.stockWithValues.observe(viewLifecycleOwner){
             val colors = ArrayList<Int>()
 
@@ -164,17 +172,121 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
     }
 
+    private fun setBuysAndUsedDividendsChart(list: List<DataTransactionsWrapperEntity>?,  barChart: BarChart, colors: ArrayList<Int>) {
+        val entriesBuy       = ArrayList<BarEntry>()
+        val entriesDividends = ArrayList<BarEntry>()
+
+        var x = 0
+        list!!.forEach {
+            entriesBuy.add(BarEntry(x.toFloat(), it.value))
+
+            entriesDividends.add(BarEntry((x+1).toFloat(), it.credits))
+
+            x += 3
+        }
+
+        val dataSetBuy = BarDataSet( entriesBuy, "")
+        dataSetBuy.color = colors[0]
+        dataSetBuy.valueTextColor = Color.WHITE
+
+        val dataSetDividends = BarDataSet( entriesDividends, "")
+        dataSetDividends.color = colors[1]
+        dataSetDividends.valueTextColor = Color.WHITE
+        dataSetDividends.setDrawValues(false)
+
+        barChart.description.isEnabled = false
+        barChart.description.textColor = Color.WHITE
+
+        val barData = BarData()
+        barData.setValueTextSize(10f);
+        barData.barWidth = 0.9f;
+
+        barData.addDataSet(dataSetBuy)
+        barData.addDataSet(dataSetDividends)
+
+        /*val datasets = ArrayList<BarDataSet>()
+        datasets.add(dataSetBuy)
+        datasets.add(dataSetDividends)*/
+
+        barData.addDataSet(dataSetDividends)
+
+        var formart = PercentFormatter()
+        formart.mFormat = DecimalFormat("###,###,##0.00")
+
+        barData.setValueFormatter(formart)
+        barChart.data = barData
+
+        //barChart.
+        barChart.setDrawBarShadow(false)
+        barChart.setDrawValueAboveBar(true)
+
+        barChart.getDescription().setEnabled(false)
+
+        // if more than 60 entries are displayed in the chart, no values will be
+        // drawn
+        barChart.setMaxVisibleValueCount(60)
+
+        // scaling can now only be done on x- and y-axis separately
+        barChart.setPinchZoom(false)
+
+        barChart.setDrawGridBackground(false)
+        barChart.setDrawMarkers(false)
+
+        val l: Legend = barChart.legend
+        l.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+        l.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
+        l.orientation = Legend.LegendOrientation.HORIZONTAL
+        l.setDrawInside(false)
+        l.form = LegendForm.SQUARE
+        l.textColor = Color.WHITE
+        l.formSize = 7f
+        l.textSize = 7f
+        l.xEntrySpace = 4f
+
+
+        var legends = ArrayList<LegendEntry>()
+
+        var int = 0
+
+       /* list!!.forEach {
+            legends.add(LegendEntry(it.date, LegendForm.DEFAULT, NaN, NaN, null, colors[int]))
+
+            int += 1
+        }*/
+
+        legends.add(LegendEntry("Compras", LegendForm.DEFAULT, NaN, NaN, null, colors[0]))
+        legends.add(LegendEntry("Dividendos", LegendForm.DEFAULT, NaN, NaN, null, colors[1]))
+
+        l.setCustom(legends)//setEntries()
+
+        barChart.setDrawBorders(false)
+
+        barChart.setBorderColor(Color.WHITE)
+        barChart.setFitBars(false)
+        barChart.setScaleEnabled(false)
+
+        barChart.data.setValueTextColor(Color.WHITE)
+
+        barChart.invalidate()
+    }
+
     private fun setDividendsChart(list: List<DataTransactionsWrapperEntity>?, barChart: BarChart, colors: ArrayList<Int>){
         val entries = ArrayList<BarEntry>()
 
+        var x = 0
         list!!.forEach {
-            entries.add(BarEntry(it.value, it.value))
+            entries.add(BarEntry(x.toFloat(), it.value, it.date))
+
+            x += 3
         }
 
 
         val dataSet = BarDataSet( entries, "")
 
         dataSet.colors = colors
+        dataSet.valueTextColor = Color.WHITE
+
+    //    dataSet.setDrawValues(false)
 
         barChart.description.isEnabled = false
         barChart.description.textColor = Color.WHITE
@@ -192,25 +304,25 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         barChart.data = barData
 
         //barChart.
-        barChart.setDrawBarShadow(false);
-        barChart.setDrawValueAboveBar(true);
+        barChart.setDrawBarShadow(false)
+        barChart.setDrawValueAboveBar(true)
 
-        barChart.getDescription().setEnabled(false);
+        barChart.getDescription().setEnabled(false)
 
         // if more than 60 entries are displayed in the chart, no values will be
         // drawn
-        barChart.setMaxVisibleValueCount(60);
+        barChart.setMaxVisibleValueCount(60)
 
         // scaling can now only be done on x- and y-axis separately
-        barChart.setPinchZoom(false);
+        barChart.setPinchZoom(false)
 
-        barChart.setDrawGridBackground(false);
-
+        barChart.setDrawGridBackground(false)
+        barChart.setDrawMarkers(false)
 
         val l: Legend = barChart.legend
-        l.verticalAlignment = Legend.LegendVerticalAlignment.TOP
-        l.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
-        l.orientation = Legend.LegendOrientation.VERTICAL
+        l.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+        l.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
+        l.orientation = Legend.LegendOrientation.HORIZONTAL
         l.setDrawInside(false)
         l.form = LegendForm.SQUARE
         l.textColor = Color.WHITE
@@ -230,7 +342,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         }
 
 
-        l.setEntries(legends)
+        l.setCustom(legends)//setEntries()
 
         barChart.setDrawBorders(false)
 
@@ -239,7 +351,6 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         barChart.setScaleEnabled(false)
 
         barChart.data.setValueTextColor(Color.WHITE)
-
 
         barChart.invalidate()
     }
