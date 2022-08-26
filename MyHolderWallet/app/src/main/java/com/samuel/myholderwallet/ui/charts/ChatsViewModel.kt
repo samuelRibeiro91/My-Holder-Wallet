@@ -10,6 +10,7 @@ import com.samuel.myholderwallet.db.wrapper.PaperValueWrapperEntity
 import com.samuel.myholderwallet.repository.BrokerRepository
 import com.samuel.myholderwallet.repository.TransactionRepository
 import kotlinx.coroutines.launch
+import java.util.*
 
 class ChatsViewModel(
     private val brokerRepository: BrokerRepository,
@@ -82,8 +83,17 @@ class ChatsViewModel(
         val totalStock     = transactionRepository.getTotalStockByBroker(brokerSelected.value!!.id)
         val totalReits     = transactionRepository.getTotalReitsByBroker(brokerSelected.value!!.id)
 
-        var initialValue: Long = 0
-        var endValue: Long = 0
+        val calendar: Calendar = Calendar.getInstance()
+
+        calendar.getActualMaximum(Calendar.DATE)
+
+        var endValue: Long = calendar.timeInMillis
+
+        calendar.add(Calendar.MONTH, -6);
+        calendar.set(Calendar.DATE, 1);
+        calendar.add(Calendar.MONTH, -1);
+
+        var initialValue: Long = calendar.timeInMillis
 
         _adrWithValues  .postValue(transactionRepository.getAdrsWithValues(brokerSelected.value!!.id))
         _stockWithValues.postValue(transactionRepository.getStocksWithValues(brokerSelected.value!!.id))

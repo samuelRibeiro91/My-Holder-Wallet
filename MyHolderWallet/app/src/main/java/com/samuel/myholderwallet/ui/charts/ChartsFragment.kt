@@ -1,8 +1,6 @@
 package com.samuel.myholderwallet.ui.charts
 
-import android.R.attr.data
 import android.graphics.Color
-import android.graphics.Typeface.NORMAL
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -17,6 +15,8 @@ import androidx.navigation.fragment.findNavController
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.Legend.LegendForm
+import com.github.mikephil.charting.components.LegendEntry
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -31,6 +31,7 @@ import com.samuel.myholderwallet.repository.BrokerRepository
 import com.samuel.myholderwallet.repository.BrokerRepositoryImpl
 import com.samuel.myholderwallet.repository.TransactionRepository
 import com.samuel.myholderwallet.repository.TransactionRepositoryImpl
+import java.lang.Float.NaN
 import java.text.DecimalFormat
 
 
@@ -179,6 +180,8 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         barChart.description.textColor = Color.WHITE
 
         val barData = BarData()
+        barData.setValueTextSize(10f);
+        barData.barWidth = 0.9f;
 
         barData.addDataSet(dataSet)
 
@@ -188,20 +191,55 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         barData.setValueFormatter(formart)
         barChart.data = barData
 
-       /* barChart.holeRadius = 58f
-        barChart.transparentCircleRadius =61f
+        //barChart.
+        barChart.setDrawBarShadow(false);
+        barChart.setDrawValueAboveBar(true);
 
-        barChart.setUsePercentValues(true)
+        barChart.getDescription().setEnabled(false);
 
-        barChart.isDrawHoleEnabled =true
-        barChart.setHoleColor(Color.TRANSPARENT);
+        // if more than 60 entries are displayed in the chart, no values will be
+        // drawn
+        barChart.setMaxVisibleValueCount(60);
 
-        barChart.setTransparentCircleColor(Color.WHITE)
-        barChart.setTransparentCircleAlpha(110)
+        // scaling can now only be done on x- and y-axis separately
+        barChart.setPinchZoom(false);
+
+        barChart.setDrawGridBackground(false);
 
 
-        barChart.setEntryLabelColor(Color.WHITE)
-        barChart.setEntryLabelTextSize(14f)*/
+        val l: Legend = barChart.legend
+        l.verticalAlignment = Legend.LegendVerticalAlignment.TOP
+        l.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+        l.orientation = Legend.LegendOrientation.VERTICAL
+        l.setDrawInside(false)
+        l.form = LegendForm.SQUARE
+        l.textColor = Color.WHITE
+        l.formSize = 7f
+        l.textSize = 7f
+        l.xEntrySpace = 4f
+
+
+        var legends = ArrayList<LegendEntry>()
+
+        var int = 0
+
+        list!!.forEach {
+            legends.add(LegendEntry(it.date, LegendForm.DEFAULT, NaN, NaN, null, colors[int]))
+
+            int += 1
+        }
+
+
+        l.setEntries(legends)
+
+        barChart.setDrawBorders(false)
+
+        barChart.setBorderColor(Color.WHITE)
+        barChart.setFitBars(false)
+        barChart.setScaleEnabled(false)
+
+        barChart.data.setValueTextColor(Color.WHITE)
+
 
         barChart.invalidate()
     }
