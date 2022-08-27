@@ -4,9 +4,7 @@ import android.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
@@ -16,7 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import com.samuel.myholdertransaction.db.dao.TransactionDAO
+import com.samuel.myholderwallet.db.dao.TransactionDAO
 import com.samuel.myholderwallet.R
 import com.samuel.myholderwallet.db.AppDatabase
 import com.samuel.myholderwallet.db.dao.BrokerDAO
@@ -24,8 +22,6 @@ import com.samuel.myholderwallet.db.dao.PaperDAO
 import com.samuel.myholderwallet.db.dao.WalletDAO
 import com.samuel.myholderwallet.extension.navigateWithAnimations
 import com.samuel.myholderwallet.repository.*
-import com.samuel.myholderwallet.ui.paperlist.PaperListAdapter
-import com.samuel.myholderwallet.ui.paperlist.PaperListFragmentDirections
 import com.samuel.myholderwallet.usecases.TransactionCreditsValidateUseCase
 
 class TransactionListFragment : Fragment(R.layout.fragment_transaction_list) {

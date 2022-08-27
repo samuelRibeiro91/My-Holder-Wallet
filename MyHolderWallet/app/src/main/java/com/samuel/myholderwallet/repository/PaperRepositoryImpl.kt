@@ -1,6 +1,5 @@
 package com.samuel.myholderwallet.repository
 
-import androidx.lifecycle.LiveData
 import com.samuel.myholderwallet.db.dao.PaperDAO
 import com.samuel.myholderwallet.db.entity.PaperEntity
 

@@ -17,7 +17,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import com.samuel.myholdertransaction.db.dao.TransactionDAO
+import com.samuel.myholderwallet.db.dao.TransactionDAO
 import com.samuel.myholderwallet.R
 import com.samuel.myholderwallet.db.AppDatabase
 import com.samuel.myholderwallet.db.dao.BrokerDAO
@@ -246,7 +246,7 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
             }
 
             val inputDate = requireView().findViewById<TextInputEditText>(R.id.input_date)
-            var date: Double = 0.0
+            var date = 0.0
 
             if (inputDate.text!!.isEmpty()){
                 inputDate.requestFocus()
@@ -261,7 +261,7 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
 
 
             val inputQuantity = requireView().findViewById<TextInputEditText>(R.id.input_quantity)
-            var quantity: Int = 1
+            var quantity = 1
 
             val inputCost = requireView().findViewById<TextInputEditText>(R.id.input_costs)
             var cost = 0.0f

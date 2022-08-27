@@ -18,9 +18,10 @@ import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.Legend.LegendForm
 import com.github.mikephil.charting.components.LegendEntry
 import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.formatter.DefaultValueFormatter
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.samuel.myholdertransaction.db.dao.TransactionDAO
+import com.samuel.myholderwallet.db.dao.TransactionDAO
 import com.samuel.myholderwallet.R
 import com.samuel.myholderwallet.db.AppDatabase
 import com.samuel.myholderwallet.db.dao.BrokerDAO
@@ -104,7 +105,10 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             colors.add(Color.parseColor("#b71c1c"))
             colors.add(Color.parseColor("#880e4f"))
 
-            setDividendsChart(it, requireView().findViewById(R.id.cht_dividends), colors)
+            if (it.isNotEmpty())
+                setDividendsChart(it, requireView().findViewById(R.id.cht_dividends), colors)
+            else
+                requireView().findViewById<BarChart>(R.id.cht_dividends).setNoDataText("Sem dados Disponíveis")
         }
 
         viewModel.buysAndUsedDividends.observe(viewLifecycleOwner){
@@ -112,7 +116,10 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             colors.add(Color.parseColor("#880e4f"))
             colors.add(Color.parseColor("#b71c1c"))
 
-            setBuysAndUsedDividendsChart(it, requireView().findViewById(R.id.cht_buy_and_dividends), colors)
+            if (it.isNotEmpty())
+                setBuysAndUsedDividendsChart(it, requireView().findViewById(R.id.cht_buy_and_dividends), colors)
+            else
+                requireView().findViewById<BarChart>(R.id.cht_buy_and_dividends).setNoDataText("Sem dados Disponíveis")
         }
 
         viewModel.stockWithValues.observe(viewLifecycleOwner){
@@ -130,7 +137,9 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             colors.add(Color.parseColor("#ff5722"))
 
             if (it.isNotEmpty())
-                setPaperChart(it, requireView().findViewById<PieChart>(R.id.cht_total_stock), colors)
+                setPaperChart(it, requireView().findViewById(R.id.cht_total_stock), colors)
+            else
+                requireView().findViewById<PieChart>(R.id.cht_total_stock).setNoDataText("Sem dados Disponíveis")
         }
 
         viewModel.reitWithValues.observe(viewLifecycleOwner){
@@ -149,7 +158,9 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
 
             if (it.isNotEmpty())
-                setPaperChart(it, requireView().findViewById<PieChart>(R.id.cht_total_reit), colors)
+                setPaperChart(it, requireView().findViewById(R.id.cht_total_reit), colors)
+            else
+                requireView().findViewById<PieChart>(R.id.cht_total_reit).setNoDataText("Sem dados Disponíveis")
         }
 
         viewModel.adrWithValues.observe(viewLifecycleOwner){
@@ -167,7 +178,9 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             colors.add(Color.parseColor("#33691e"))
 
             if (it.isNotEmpty())
-                setPaperChart(it, requireView().findViewById<PieChart>(R.id.cht_total_adr), colors)
+                setPaperChart(it, requireView().findViewById(R.id.cht_total_adr), colors)
+            else
+                requireView().findViewById<PieChart>(R.id.cht_total_adr).setNoDataText("Sem dados Disponíveis")
         }
 
     }
@@ -180,7 +193,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         list!!.forEach {
             entriesBuy.add(BarEntry(x.toFloat(), it.value))
 
-            entriesDividends.add(BarEntry((x+1).toFloat(), it.credits))
+            entriesDividends.add(BarEntry((x).toFloat(), it.credits))
 
             x += 3
         }
@@ -188,45 +201,35 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         val dataSetBuy = BarDataSet( entriesBuy, "")
         dataSetBuy.color = colors[0]
         dataSetBuy.valueTextColor = Color.WHITE
+        dataSetBuy.valueFormatter = DefaultValueFormatter(2)
 
         val dataSetDividends = BarDataSet( entriesDividends, "")
         dataSetDividends.color = colors[1]
         dataSetDividends.valueTextColor = Color.WHITE
-        dataSetDividends.setDrawValues(false)
+        dataSetDividends.setDrawValues(true)
+        dataSetDividends.valueFormatter = DefaultValueFormatter(2)
 
         barChart.description.isEnabled = false
         barChart.description.textColor = Color.WHITE
 
         val barData = BarData()
-        barData.setValueTextSize(10f);
-        barData.barWidth = 0.9f;
+        barData.setValueTextSize(10f)
+        barData.barWidth = 0.9f
 
         barData.addDataSet(dataSetBuy)
         barData.addDataSet(dataSetDividends)
 
-        /*val datasets = ArrayList<BarDataSet>()
-        datasets.add(dataSetBuy)
-        datasets.add(dataSetDividends)*/
-
         barData.addDataSet(dataSetDividends)
 
-        var formart = PercentFormatter()
-        formart.mFormat = DecimalFormat("###,###,##0.00")
-
-        barData.setValueFormatter(formart)
         barChart.data = barData
 
-        //barChart.
         barChart.setDrawBarShadow(false)
         barChart.setDrawValueAboveBar(true)
 
-        barChart.getDescription().setEnabled(false)
+        barChart.description.isEnabled = false
 
-        // if more than 60 entries are displayed in the chart, no values will be
-        // drawn
         barChart.setMaxVisibleValueCount(60)
 
-        // scaling can now only be done on x- and y-axis separately
         barChart.setPinchZoom(false)
 
         barChart.setDrawGridBackground(false)
@@ -241,23 +244,15 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         l.textColor = Color.WHITE
         l.formSize = 7f
         l.textSize = 7f
-        l.xEntrySpace = 4f
+        l.xEntrySpace = 10f
+        l.yEntrySpace = 10f
 
-
-        var legends = ArrayList<LegendEntry>()
-
-        var int = 0
-
-       /* list!!.forEach {
-            legends.add(LegendEntry(it.date, LegendForm.DEFAULT, NaN, NaN, null, colors[int]))
-
-            int += 1
-        }*/
+        val legends = ArrayList<LegendEntry>()
 
         legends.add(LegendEntry("Compras", LegendForm.DEFAULT, NaN, NaN, null, colors[0]))
         legends.add(LegendEntry("Dividendos", LegendForm.DEFAULT, NaN, NaN, null, colors[1]))
 
-        l.setCustom(legends)//setEntries()
+        l.setCustom(legends)
 
         barChart.setDrawBorders(false)
 
@@ -268,6 +263,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         barChart.data.setValueTextColor(Color.WHITE)
 
         barChart.invalidate()
+        barChart.notifyDataSetChanged()
     }
 
     private fun setDividendsChart(list: List<DataTransactionsWrapperEntity>?, barChart: BarChart, colors: ArrayList<Int>){
@@ -285,35 +281,26 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
         dataSet.colors = colors
         dataSet.valueTextColor = Color.WHITE
-
-    //    dataSet.setDrawValues(false)
+        dataSet.valueFormatter = DefaultValueFormatter(2)
 
         barChart.description.isEnabled = false
         barChart.description.textColor = Color.WHITE
 
         val barData = BarData()
-        barData.setValueTextSize(10f);
-        barData.barWidth = 0.9f;
+        barData.setValueTextSize(10f)
+        barData.barWidth = 0.9f
 
         barData.addDataSet(dataSet)
 
-        var formart = PercentFormatter()
-        formart.mFormat = DecimalFormat("###,###,##0.00")
-
-        barData.setValueFormatter(formart)
         barChart.data = barData
 
-        //barChart.
         barChart.setDrawBarShadow(false)
         barChart.setDrawValueAboveBar(true)
 
-        barChart.getDescription().setEnabled(false)
+        barChart.description.isEnabled = false
 
-        // if more than 60 entries are displayed in the chart, no values will be
-        // drawn
         barChart.setMaxVisibleValueCount(60)
 
-        // scaling can now only be done on x- and y-axis separately
         barChart.setPinchZoom(false)
 
         barChart.setDrawGridBackground(false)
@@ -328,14 +315,15 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         l.textColor = Color.WHITE
         l.formSize = 7f
         l.textSize = 7f
-        l.xEntrySpace = 4f
+        l.xEntrySpace = 10f
+        l.yEntrySpace = 10f
 
 
-        var legends = ArrayList<LegendEntry>()
+        val legends = ArrayList<LegendEntry>()
 
         var int = 0
 
-        list!!.forEach {
+        list.forEach {
             legends.add(LegendEntry(it.date, LegendForm.DEFAULT, NaN, NaN, null, colors[int]))
 
             int += 1
@@ -353,6 +341,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         barChart.data.setValueTextColor(Color.WHITE)
 
         barChart.invalidate()
+        barChart.notifyDataSetChanged()
     }
 
     private fun setPaperChart(list: List<PaperValueWrapperEntity>?, pieChart: PieChart, colors: ArrayList<Int>) {
@@ -360,7 +349,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
 
         if (list!!.size <=5){
-            list!!.forEach {
+            list.forEach {
                 if (it.value > 0.0f)
                     entries.add(PieEntry(it.value, it.description))
             }
@@ -395,7 +384,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
         val pieData = PieData(dataSet)
 
-        var formart = PercentFormatter()
+        val formart = PercentFormatter()
         formart.mFormat = DecimalFormat("###,###,##0.00")
 
         pieData.setValueFormatter(formart)
@@ -418,7 +407,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         pieChart.setUsePercentValues(true)
 
         pieChart.isDrawHoleEnabled =true
-        pieChart.setHoleColor(Color.TRANSPARENT);
+        pieChart.setHoleColor(Color.TRANSPARENT)
 
         pieChart.setTransparentCircleColor(Color.WHITE)
         pieChart.setTransparentCircleAlpha(110)
@@ -428,7 +417,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         pieChart.setEntryLabelTextSize(14f)
 
         pieChart.invalidate()
-
+        pieChart.notifyDataSetChanged()
     }
 
     private fun setInvestmentsChart(){
@@ -436,9 +425,9 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
         val entries = ArrayList<PieEntry>()
 
-        if  (viewModel.totalStockValue.value  ?: 0.0f != 0.0f) entries.add(PieEntry(viewModel.totalStockValue.value  ?: 0.0f, "Ações"))
-        if  (viewModel.totalReitsValue.value  ?: 0.0f != 0.0f) entries.add(PieEntry(viewModel.totalReitsValue.value  ?: 0.0f, "FIIs"))
-        if  (viewModel.totalAdrsValue.value  ?: 0.0f != 0.0f) entries.add(PieEntry(viewModel.totalAdrsValue.value  ?: 0.0f, "Bdrs"))
+        if  ((viewModel.totalStockValue.value ?: 0.0f) != 0.0f) entries.add(PieEntry(viewModel.totalStockValue.value  ?: 0.0f, "Ações"))
+        if  ((viewModel.totalReitsValue.value ?: 0.0f) != 0.0f) entries.add(PieEntry(viewModel.totalReitsValue.value  ?: 0.0f, "FIIs"))
+        if  ((viewModel.totalAdrsValue.value ?: 0.0f) != 0.0f) entries.add(PieEntry(viewModel.totalAdrsValue.value  ?: 0.0f, "Bdrs"))
 
         val dataSet = PieDataSet( entries, "")
 
@@ -454,7 +443,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
         val pieData = PieData(dataSet)
 
-        var formart = PercentFormatter()
+        val formart = PercentFormatter()
         formart.mFormat = DecimalFormat("###,###,##0.00")
 
         pieData.setValueFormatter(formart)
@@ -477,7 +466,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         pieChart.setUsePercentValues(true)
 
         pieChart.isDrawHoleEnabled =true
-        pieChart.setHoleColor(Color.TRANSPARENT);
+        pieChart.setHoleColor(Color.TRANSPARENT)
 
         pieChart.setTransparentCircleColor(Color.WHITE)
         pieChart.setTransparentCircleAlpha(110)
@@ -487,6 +476,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         pieChart.setEntryLabelTextSize(14f)
 
         pieChart.invalidate()
+        pieChart.notifyDataSetChanged()
     }
 
     private fun configureViewListeners() {

@@ -13,7 +13,6 @@ import com.samuel.myholderwallet.repository.BrokerRepository
 import com.samuel.myholderwallet.repository.PaperRepository
 import com.samuel.myholderwallet.repository.TransactionRepository
 import com.samuel.myholderwallet.types.MovementTypes
-import com.samuel.myholderwallet.ui.paper.PaperViewModel
 import com.samuel.myholderwallet.usecases.TransactionCreditsValidateUseCase
 import kotlinx.coroutines.launch
 

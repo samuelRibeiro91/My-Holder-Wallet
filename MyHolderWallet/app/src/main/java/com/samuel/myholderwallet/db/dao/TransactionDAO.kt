@@ -1,4 +1,4 @@
-package com.samuel.myholdertransaction.db.dao
+package com.samuel.myholderwallet.db.dao
 
 import androidx.room.*
 import com.samuel.myholderwallet.db.entity.TransactionEntity
@@ -167,7 +167,7 @@ interface TransactionDAO {
 
     @Query("select  " +
             "    strftime(' %m/%Y', `transaction`.date / 1000, 'unixepoch')date, " +
-            "    sum(case `transaction`.type when 1 then  `transaction`.quantity * `transaction`.value else (( `transaction`.quantity * `transaction`.value) * -10) end)value, " +
+            "    sum(case `transaction`.type when 1 then  `transaction`.quantity * `transaction`.value else (( `transaction`.quantity * `transaction`.value) * -1) end)value, " +
             "    sum(`transaction`.credit)credits  " +
             "from `transaction` " +
             "where (`transaction`.fk_broker =  :brokerID) " +

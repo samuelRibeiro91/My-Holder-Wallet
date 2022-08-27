@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.samuel.myholderwallet.R
 import com.samuel.myholderwallet.db.entity.BrokerEntity
 import com.samuel.myholderwallet.repository.BrokerRepository
-import com.samuel.myholderwallet.ui.broker.BrokerViewModel
 import kotlinx.coroutines.launch
 
 class BrokerListViewModel(private val repository: BrokerRepository): ViewModel() {

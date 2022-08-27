@@ -6,10 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.samuel.myholderwallet.R
-import com.samuel.myholderwallet.db.entity.BrokerEntity
 import com.samuel.myholderwallet.db.entity.PaperEntity
 import com.samuel.myholderwallet.repository.PaperRepository
-import com.samuel.myholderwallet.ui.brokerlist.BrokerListViewModel
 import kotlinx.coroutines.launch
 
 class PaperListViewModel(private val repository: PaperRepository): ViewModel() {

@@ -1,8 +1,7 @@
 package com.samuel.myholderwallet.repository
 
-import com.samuel.myholdertransaction.db.dao.TransactionDAO
+import com.samuel.myholderwallet.db.dao.TransactionDAO
 import com.samuel.myholderwallet.db.entity.TransactionEntity
-import com.samuel.myholderwallet.db.wrapper.DataTransactionsWrapperEntity
 import com.samuel.myholderwallet.db.wrapper.PaperValueWrapperEntity
 
 class TransactionRepositoryImpl(private val transactionDAO: TransactionDAO): TransactionRepository {

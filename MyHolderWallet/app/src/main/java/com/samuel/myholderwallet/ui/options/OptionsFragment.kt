@@ -2,7 +2,6 @@ package com.samuel.myholderwallet.ui.options
 
 import android.os.Bundle
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -11,14 +10,6 @@ import com.samuel.myholderwallet.extension.navigateWithAnimations
 
 
 class OptionsFragment : Fragment(R.layout.fragment_options) {
-    private lateinit var viewModel: OptionsViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

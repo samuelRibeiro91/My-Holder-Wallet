@@ -1,6 +1,5 @@
 package com.samuel.myholderwallet.repository
 
-import androidx.lifecycle.LiveData
 import com.samuel.myholderwallet.db.entity.BrokerEntity
 
 interface BrokerRepository {

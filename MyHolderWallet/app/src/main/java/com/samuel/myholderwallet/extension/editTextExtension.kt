@@ -2,6 +2,7 @@ package com.samuel.myholderwallet.extension
 
 import android.app.DatePickerDialog
 import android.content.Context
+import android.graphics.Color
 import com.google.android.material.textfield.TextInputEditText
 import java.text.SimpleDateFormat
 import java.util.*
@@ -29,6 +30,8 @@ fun TextInputEditText.transformIntoDatePicker(context: Context, format: String, 
         ).run {
             maxDate?.time?.also { datePicker.maxDate = it }
             show()
+            this.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(Color.WHITE)
+            this.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(Color.WHITE)
         }
     }
 }

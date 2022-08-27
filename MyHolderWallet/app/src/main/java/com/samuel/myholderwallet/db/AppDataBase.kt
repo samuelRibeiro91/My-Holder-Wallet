@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.samuel.myholdertransaction.db.dao.TransactionDAO
+import com.samuel.myholderwallet.db.dao.TransactionDAO
 import com.samuel.myholderwallet.db.Converters.Converters
 import com.samuel.myholderwallet.db.dao.BrokerDAO
 import com.samuel.myholderwallet.db.dao.PaperDAO

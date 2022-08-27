@@ -10,7 +10,6 @@ import com.samuel.myholderwallet.R
 import com.samuel.myholderwallet.db.entity.TransactionEntity
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.pow
 
 class TransactionListAdapter(private val transactions: List<TransactionEntity>): RecyclerView.Adapter<TransactionListAdapter.TransactionListViewHolder>() {
     var onItemClick: ((entity: TransactionEntity) -> Unit)? = null

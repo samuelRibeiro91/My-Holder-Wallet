@@ -87,13 +87,13 @@ class ChatsViewModel(
 
         calendar.getActualMaximum(Calendar.DATE)
 
-        var endValue: Long = calendar.timeInMillis
+        val endValue: Long = calendar.timeInMillis
 
-        calendar.add(Calendar.MONTH, -6);
-        calendar.set(Calendar.DATE, 1);
-        calendar.add(Calendar.MONTH, -1);
+        calendar.add(Calendar.MONTH, -6)
+        calendar.set(Calendar.DATE, 1)
+        calendar.add(Calendar.MONTH, -1)
 
-        var initialValue: Long = calendar.timeInMillis
+        val initialValue: Long = calendar.timeInMillis
 
         _adrWithValues  .postValue(transactionRepository.getAdrsWithValues(brokerSelected.value!!.id))
         _stockWithValues.postValue(transactionRepository.getStocksWithValues(brokerSelected.value!!.id))
@@ -101,13 +101,13 @@ class ChatsViewModel(
 
         _accountBalance.postValue(transactionRepository.getAccountBalanceByBroker(brokerSelected.value!!.id))
 
-        _totalAdrsValue.postValue(totalAdrs ?: 0.0f)
+        _totalAdrsValue.postValue(totalAdrs )
 
-        _totalStockValue.postValue(totalStock ?: 0.0f)
+        _totalStockValue.postValue(totalStock )
 
-        _totalReitsValue.postValue(totalReits ?: 0.0f)
+        _totalReitsValue.postValue(totalReits)
 
-        _totalValue.postValue((accountBalance ?: 0.0f ) + (totalStock ?: 0.0f )+ (totalAdrs ?: 0.0f ) + (totalReits ?: 0.0f ))
+        _totalValue.postValue((accountBalance) + (totalStock) + (totalAdrs) + (totalReits))
 
         _dividendValues.postValue(transactionRepository.getDividendsByDate(brokerSelected.value!!.id, initialValue, endValue))
 

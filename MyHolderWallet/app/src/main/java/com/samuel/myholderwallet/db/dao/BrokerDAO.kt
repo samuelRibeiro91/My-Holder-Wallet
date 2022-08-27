@@ -1,6 +1,5 @@
 package com.samuel.myholderwallet.db.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.samuel.myholderwallet.db.entity.BrokerEntity
 
