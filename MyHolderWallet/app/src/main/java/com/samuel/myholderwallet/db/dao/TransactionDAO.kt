@@ -98,7 +98,7 @@ interface TransactionDAO {
     
     
     @Query("select " +
-            "    paper.description," +
+            "    paper.initial," +
             "    coalesce(SUM(case `transaction`.type " +
             "                    when 1 then ((value * quantity))  " +
             "                    when 4  then ((coalesce((select  " +
@@ -112,12 +112,12 @@ interface TransactionDAO {
             "inner join paper on (paper.id = `transaction`.fk_paper) " +
             "where `transaction`.fk_broker = :brokerID and `transaction`.type in (1,4) and paper.type = 0 " +
             "group by 1 " +
-            "order by 2")
+            "order by 2 desc")
     suspend fun getStocksWithValues(brokerID: Long): List<PaperValueWrapperEntity>
 
 
     @Query("select " +
-            "    paper.description," +
+            "    paper.initial," +
             "    coalesce(SUM(case `transaction`.type " +
             "                    when 1 then ((value * quantity))  " +
             "                    when 4  then ((coalesce((select  " +
@@ -131,12 +131,12 @@ interface TransactionDAO {
             "inner join paper on (paper.id = `transaction`.fk_paper) " +
             "where `transaction`.fk_broker = :brokerID and `transaction`.type in (1,4) and paper.type = 1 " +
             "group by 1 " +
-            "order by 2")
+            "order by 2 desc")
     suspend fun getReitsWithValues(brokerID: Long): List<PaperValueWrapperEntity>
 
 
     @Query("select " +
-            "    paper.description," +
+            "    paper.initial," +
             "    coalesce(SUM(case `transaction`.type " +
             "                    when 1 then ((value * quantity))  " +
             "                    when 4  then ((coalesce((select  " +
@@ -150,7 +150,7 @@ interface TransactionDAO {
             "inner join paper on (paper.id = `transaction`.fk_paper) " +
             "where `transaction`.fk_broker = :brokerID and `transaction`.type in (1,4) and paper.type = 2 " +
             "group by 1 " +
-            "order by 2")
+            "order by 2 desc")
     suspend fun getAdrsWithValues(brokerID: Long): List<PaperValueWrapperEntity>
 
 

@@ -126,14 +126,14 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             val colors = ArrayList<Int>()
 
             colors.add(Color.parseColor("#673ab7"))
-            colors.add(Color.parseColor("#3f51b5"))
-            colors.add(Color.parseColor("#2196f3"))
-            colors.add(Color.parseColor("#03a9f4"))
+            colors.add(Color.parseColor("#1be7ff"))
+            colors.add(Color.parseColor("#cddc39"))
+            colors.add(Color.parseColor("#ff5722"))
             colors.add(Color.parseColor("#00bcd4"))
             colors.add(Color.parseColor("#009688"))
             colors.add(Color.parseColor("#4caf50"))
             colors.add(Color.parseColor("#8bc34a"))
-            colors.add(Color.parseColor("#cddc39"))
+            colors.add(Color.parseColor("#aed581"))
             colors.add(Color.parseColor("#ff5722"))
 
             if (it.isNotEmpty())
@@ -147,8 +147,8 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
             colors.add(Color.parseColor("#90a4ae"))
             colors.add(Color.parseColor("#4db6ac"))
-            colors.add(Color.parseColor("#ff8a65"))
-            colors.add(Color.parseColor("#4fc3f7"))
+            colors.add(Color.parseColor("#81c784"))
+            colors.add(Color.parseColor("#4dd0e1"))
             colors.add(Color.parseColor("#a1887f"))
             colors.add(Color.parseColor("#fff176"))
             colors.add(Color.parseColor("#aed581"))
@@ -168,7 +168,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
             colors.add(Color.parseColor("#b71c1c"))
             colors.add(Color.parseColor("#880e4f"))
-            colors.add(Color.parseColor("#880e4f"))
+            colors.add(Color.parseColor("#33691e"))
             colors.add(Color.parseColor("#311b92"))
             colors.add(Color.parseColor("#01579b"))
             colors.add(Color.parseColor("#006064"))
@@ -351,7 +351,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         if (list!!.size <=5){
             list.forEach {
                 if (it.value > 0.0f)
-                    entries.add(PieEntry(it.value, it.description))
+                    entries.add(PieEntry(it.value, it.initial))
             }
         }
         else
@@ -361,7 +361,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
             list!!.forEach {
                 if ((it.value > 0.0f) && (count < 5)) {
-                    entries.add(PieEntry(it.value, it.description))
+                    entries.add(PieEntry(it.value, it.initial))
                     count += 1
                 } else
                 {

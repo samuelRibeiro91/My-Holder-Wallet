@@ -50,7 +50,7 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
                 val walletDAO : WalletDAO = AppDatabase.getInstance(requireContext()).walletDAO
                 val walletRepository: WalletRepository = WalletRepositoryImpl(walletDAO)
 
-                val transactionCreditsValidateUseCase = TransactionCreditsValidateUseCase(walletRepository, requireContext())
+                val transactionCreditsValidateUseCase = TransactionCreditsValidateUseCase(walletRepository)
 
                 return TransactionViewModel(
                     transactionRepository = transactionRepository,
