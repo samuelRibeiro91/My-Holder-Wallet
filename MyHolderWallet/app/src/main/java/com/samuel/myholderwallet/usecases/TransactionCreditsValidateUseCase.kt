@@ -138,22 +138,50 @@ class TransactionCreditsValidateUseCase(
             when (transactionEntity.type){
                 MovementTypes.CASH_WITHDRAWAL ->{
                     val credits = wallet.credit
+                    val oldUsedCredits = transactionEntity.credit
 
-                    val usedCredit = transactionEntity.credit
+                    val buyValue = (transactionEntity.value * transactionEntity.quantity) - transactionEntity.cost
 
-                    val finalCredit = credits + usedCredit
+                    var finalCredit = 0.0f
+                    var usedCredit = 0.0f
 
+
+                    if (credits+oldUsedCredits >= buyValue){
+                        finalCredit = (credits+oldUsedCredits) - buyValue
+                        usedCredit = buyValue
+                    }
+
+                    if (credits+oldUsedCredits < buyValue){
+                        finalCredit = 0.0f
+                        usedCredit = credits+oldUsedCredits
+                    }
+
+                    transactionEntity.credit = usedCredit
                     wallet.credit = finalCredit
 
                     walletRepository.update(wallet)
                 }
                 MovementTypes.BUY_PAPERS -> {
                     val credits = wallet.credit
+                    val oldUsedCredits = transactionEntity.credit
 
-                    val usedCredit = transactionEntity.credit
+                    val buyValue = (transactionEntity.value * transactionEntity.quantity) - transactionEntity.cost
 
-                    val finalCredit = credits + usedCredit
+                    var finalCredit = 0.0f
+                    var usedCredit = 0.0f
 
+
+                    if (credits+oldUsedCredits >= buyValue){
+                        finalCredit = (credits+oldUsedCredits) - buyValue
+                        usedCredit = buyValue
+                    }
+
+                    if (credits+oldUsedCredits < buyValue){
+                        finalCredit = 0.0f
+                        usedCredit = credits+oldUsedCredits
+                    }
+
+                    transactionEntity.credit = usedCredit
                     wallet.credit = finalCredit
 
                     walletRepository.update(wallet)
@@ -169,7 +197,7 @@ class TransactionCreditsValidateUseCase(
         }
     }
 
-    private suspend fun returnWalletEntity(fk_broker: Long): WalletEntity? = withContext(Dispatchers.IO) {
+    suspend fun returnWalletEntity(fk_broker: Long): WalletEntity? = withContext(Dispatchers.IO) {
         var wallet : WalletEntity? = walletRepository.getByBroker(fk_broker)
 
         if (wallet == null){
