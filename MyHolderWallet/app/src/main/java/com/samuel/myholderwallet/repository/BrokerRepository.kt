@@ -4,7 +4,6 @@ import com.samuel.myholderwallet.db.entity.BrokerEntity
 
 interface BrokerRepository {
 
-
     suspend fun get(id: Long): BrokerEntity
 
     suspend fun getAll(): List<BrokerEntity>

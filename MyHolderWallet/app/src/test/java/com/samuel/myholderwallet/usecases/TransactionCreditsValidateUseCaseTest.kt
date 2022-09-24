@@ -11,7 +11,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.*
-import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 
 
@@ -51,6 +50,29 @@ class TransactionCreditsValidateUseCaseTest {
         fk_broker = 1
     )
 
+    private var cashWithDhrawalTransactionEntityWithCredits = TransactionEntity(
+        id = 1,
+        date = 0.0,
+        credit = 5.0f,
+        type = MovementTypes.CASH_WITHDRAWAL,
+        cost = 0.0f,
+        value = 1.0f,
+        quantity = 10,
+        fk_paper = 1,
+        fk_broker = 1
+    )
+
+    private var inflowDividendsTransactionEntityWithCredits = TransactionEntity(
+        id = 1,
+        date = 0.0,
+        credit = 5.0f,
+        type = MovementTypes.INFLOW_DIVIDENDS,
+        cost = 0.0f,
+        value = 1.0f,
+        quantity = 10,
+        fk_paper = 1,
+        fk_broker = 1
+    )
 
    @Before
     fun setup(){
@@ -58,7 +80,7 @@ class TransactionCreditsValidateUseCaseTest {
     }
 
     @Test
-    fun insert_TransactionEntity_NoCredit() = runTest {
+    fun step1_insert_TransactionEntity_NoCredit() = runTest {
         doReturn(FAKE_WALLETENTITY_NOCREDIT).`when`(walletRepository).getByBroker(1)
 
         transactionCreditsValidateUseCase.validateTransactionInsert(transactionEntity)
@@ -67,7 +89,8 @@ class TransactionCreditsValidateUseCaseTest {
     }
 
     @Test
-    fun insert_TransactionEntity_Credit() = runTest {
+    fun step2_insert_TransactionEntity_Credit() = runTest {
+
         doReturn(FAKE_WALLETENTITY_CREDIT).`when`(walletRepository).getByBroker(1)
 
         transactionCreditsValidateUseCase.validateTransactionInsert(transactionEntity)
@@ -76,22 +99,100 @@ class TransactionCreditsValidateUseCaseTest {
     }
 
     @Test
-    fun update_TransactionEntity_NoCredit() = runTest {
-        doReturn(FAKE_WALLETENTITY_CREDIT).`when`(walletRepository).getByBroker(1)
+    fun step3_insert_CashWithDhrawalTransactionEntity_NoCredit() = runTest {
+        doReturn(FAKE_WALLETENTITY_NOCREDIT).`when`(walletRepository).getByBroker(1)
 
+        cashWithDhrawalTransactionEntityWithCredits.credit = 0.0f
 
-        transactionCreditsValidateUseCase.validateTransactionUpdate(transactionEntity, 0.0f)
+        transactionCreditsValidateUseCase.validateTransactionInsert(cashWithDhrawalTransactionEntityWithCredits)
 
-        Assert.assertEquals(0.0f, transactionEntity.credit)
+        Assert.assertEquals(0.0f, cashWithDhrawalTransactionEntityWithCredits.credit)
     }
 
     @Test
-    fun update_TransactionEntity_Credit() = runTest {
+    fun step4_insert_CashWithDhrawalTransactionEntity_Credit() = runTest {
         doReturn(FAKE_WALLETENTITY_CREDIT).`when`(walletRepository).getByBroker(1)
 
-        transactionCreditsValidateUseCase.validateTransactionUpdate(transactionEntityWithCredits, 5.0f)
+        transactionCreditsValidateUseCase.validateTransactionInsert(cashWithDhrawalTransactionEntityWithCredits)
+
+        Assert.assertEquals(10.0f, cashWithDhrawalTransactionEntityWithCredits.credit)
+    }
+
+    @Test
+    fun step5_insert_InflowDividendsTransactionEntity_NoCredit() = runTest {
+        doReturn(FAKE_WALLETENTITY_NOCREDIT).`when`(walletRepository).getByBroker(1)
+
+        transactionCreditsValidateUseCase.validateTransactionInsert(inflowDividendsTransactionEntityWithCredits)
+
+        Assert.assertEquals(0.0f, inflowDividendsTransactionEntityWithCredits.credit)
+    }
+
+    @Test
+    fun step6_insert_InflowDividendsTransactionEntity_Credit() = runTest {
+        doReturn(FAKE_WALLETENTITY_CREDIT).`when`(walletRepository).getByBroker(1)
+
+        transactionCreditsValidateUseCase.validateTransactionInsert(inflowDividendsTransactionEntityWithCredits)
+
+        Assert.assertEquals(0.0f, inflowDividendsTransactionEntityWithCredits.credit)
+    }
+
+    ///Updates
+
+    @Test
+    fun step7_update_TransactionEntity_NoCredit() = runTest {
+        doReturn(FAKE_WALLETENTITY_CREDIT).`when`(walletRepository).getByBroker(1)
+
+        transactionCreditsValidateUseCase.validateTransactionUpdate(transactionEntity, transactionEntity.credit)
+
+        Assert.assertEquals(5.0f, transactionEntity.credit)
+    }
+
+    @Test
+    fun step8_update_TransactionEntity_Credit() = runTest {
+        doReturn(FAKE_WALLETENTITY_CREDIT).`when`(walletRepository).getByBroker(1)
+
+        transactionCreditsValidateUseCase.validateTransactionUpdate(transactionEntityWithCredits, transactionEntityWithCredits.credit)
 
         Assert.assertEquals(10.0f, transactionEntityWithCredits.credit)
+    }
+
+    @Test
+    fun step9_update_CashWithDhrawalTransactionEntity_NoCredit() = runTest {
+        doReturn(FAKE_WALLETENTITY_CREDIT).`when`(walletRepository).getByBroker(1)
+
+        cashWithDhrawalTransactionEntityWithCredits.credit = 0.0f
+
+        transactionCreditsValidateUseCase.validateTransactionUpdate(cashWithDhrawalTransactionEntityWithCredits, cashWithDhrawalTransactionEntityWithCredits.credit)
+
+        Assert.assertEquals(10.0f, cashWithDhrawalTransactionEntityWithCredits.credit)
+    }
+
+    @Test
+    fun step10_update_CashWithDhrawalTransactionEntity_Credit() = runTest {
+        doReturn(FAKE_WALLETENTITY_CREDIT).`when`(walletRepository).getByBroker(1)
+
+        transactionCreditsValidateUseCase.validateTransactionUpdate(cashWithDhrawalTransactionEntityWithCredits, cashWithDhrawalTransactionEntityWithCredits.credit)
+
+        Assert.assertEquals(10.0f, cashWithDhrawalTransactionEntityWithCredits.credit)
+    }
+
+    @Test
+    fun step11_update_InflowDividendsTransactionEntity_NoCredit() = runTest {
+        doReturn(FAKE_WALLETENTITY_CREDIT).`when`(walletRepository).getByBroker(1)
+
+        inflowDividendsTransactionEntityWithCredits.credit = 0.0f
+        transactionCreditsValidateUseCase.validateTransactionUpdate(inflowDividendsTransactionEntityWithCredits, inflowDividendsTransactionEntityWithCredits.credit)
+
+        Assert.assertEquals(0.0f, inflowDividendsTransactionEntityWithCredits.credit)
+    }
+
+    @Test
+    fun step12_update_InflowDividendsTransactionEntity_Credit() = runTest {
+        doReturn(FAKE_WALLETENTITY_CREDIT).`when`(walletRepository).getByBroker(1)
+
+        transactionCreditsValidateUseCase.validateTransactionUpdate(inflowDividendsTransactionEntityWithCredits, inflowDividendsTransactionEntityWithCredits.credit)
+
+        Assert.assertEquals(0.0f, inflowDividendsTransactionEntityWithCredits.credit)
     }
 
 }

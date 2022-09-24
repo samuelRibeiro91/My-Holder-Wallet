@@ -8,10 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.samuel.myholderwallet.R
 import com.samuel.myholderwallet.db.entity.BrokerEntity
 import com.samuel.myholderwallet.repository.BrokerRepository
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class BrokerViewModel(
-    private val repository: BrokerRepository
+    private val repository: BrokerRepository,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : ViewModel() {
 
     private val _brokerStateEventData = MutableLiveData<BrokerState>()
@@ -22,7 +25,7 @@ class BrokerViewModel(
     val messageStateEventData : LiveData<Int>
         get() = _messageStateEventData
 
-    fun insertOrUpdateBroker(name: String, id: Long = 0) = viewModelScope.launch {
+    fun insertOrUpdateBroker(name: String, id: Long = 0) = viewModelScope.launch(dispatcher) {
         if (id > 0){
             updateBroker(id, name)
         }
@@ -32,7 +35,7 @@ class BrokerViewModel(
         }
     }
 
-    private fun updateBroker(id: Long, name: String) = viewModelScope.launch {
+    private suspend fun updateBroker(id: Long, name: String)  {
         try {
             repository.update(BrokerEntity().apply { this.id   = id
                                                      this.name = name })
@@ -46,9 +49,11 @@ class BrokerViewModel(
         }
     }
 
-    private fun insertBroker(name: String) = viewModelScope.launch {
+    private suspend fun insertBroker(name: String)  {
         try {
-            val id = repository.insert(BrokerEntity().apply { this.name = name } )
+            val broker = BrokerEntity().apply { this.name = name }
+
+            val id = repository.insert(broker)
 
             if (id > 0){
                 _brokerStateEventData.value = BrokerState.Inserted
@@ -60,7 +65,6 @@ class BrokerViewModel(
             Log.e(TAG, ex.toString())
         }
     }
-
 
 
     sealed class BrokerState{

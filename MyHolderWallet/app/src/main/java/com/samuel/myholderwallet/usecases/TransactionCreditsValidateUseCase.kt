@@ -190,6 +190,8 @@ class TransactionCreditsValidateUseCase(
                 MovementTypes.INFLOW_DIVIDENDS ->{
                     val finalCredit = wallet.credit - oldValue + transactionEntity.value
 
+                    transactionEntity.credit = 0.0f
+
                     wallet.credit = finalCredit
                     walletRepository.update(wallet)
                 }
