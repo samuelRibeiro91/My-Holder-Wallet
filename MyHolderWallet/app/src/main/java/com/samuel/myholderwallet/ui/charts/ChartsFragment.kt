@@ -108,7 +108,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             if (it.isNotEmpty())
                 setDividendsChart(it, requireView().findViewById(R.id.cht_dividends), colors)
             else
-                requireView().findViewById<BarChart>(R.id.cht_dividends).setNoDataText("Sem dados Disponíveis")
+                requireView().findViewById<BarChart>(R.id.cht_dividends).setNoDataText(getString(R.string.sem_dados_disponiveis))
         }
 
         viewModel.buysAndUsedDividends.observe(viewLifecycleOwner){
@@ -119,7 +119,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             if (it.isNotEmpty())
                 setBuysAndUsedDividendsChart(it, requireView().findViewById(R.id.cht_buy_and_dividends), colors)
             else
-                requireView().findViewById<BarChart>(R.id.cht_buy_and_dividends).setNoDataText("Sem dados Disponíveis")
+                requireView().findViewById<BarChart>(R.id.cht_buy_and_dividends).setNoDataText(getString(R.string.sem_dados_disponiveis))
         }
 
         viewModel.stockWithValues.observe(viewLifecycleOwner){
@@ -139,7 +139,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             if (it.isNotEmpty())
                 setPaperChart(it, requireView().findViewById(R.id.cht_total_stock), colors)
             else
-                requireView().findViewById<PieChart>(R.id.cht_total_stock).setNoDataText("Sem dados Disponíveis")
+                requireView().findViewById<PieChart>(R.id.cht_total_stock).setNoDataText(getString(R.string.sem_dados_disponiveis))
         }
 
         viewModel.reitWithValues.observe(viewLifecycleOwner){
@@ -160,7 +160,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             if (it.isNotEmpty())
                 setPaperChart(it, requireView().findViewById(R.id.cht_total_reit), colors)
             else
-                requireView().findViewById<PieChart>(R.id.cht_total_reit).setNoDataText("Sem dados Disponíveis")
+                requireView().findViewById<PieChart>(R.id.cht_total_reit).setNoDataText(getString(R.string.sem_dados_disponiveis))
         }
 
         viewModel.adrWithValues.observe(viewLifecycleOwner){
@@ -180,7 +180,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
             if (it.isNotEmpty())
                 setPaperChart(it, requireView().findViewById(R.id.cht_total_adr), colors)
             else
-                requireView().findViewById<PieChart>(R.id.cht_total_adr).setNoDataText("Sem dados Disponíveis")
+                requireView().findViewById<PieChart>(R.id.cht_total_adr).setNoDataText(getString(R.string.sem_dados_disponiveis))
         }
 
     }
@@ -485,7 +485,7 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
         }
 
         requireView().findViewById<Spinner>(R.id.spinner_broker).onItemSelectedListener = object  : AdapterView.OnItemSelectedListener{
-            override fun onNothingSelected(p0: AdapterView<*>?) {  }
+            override fun onNothingSelected(p0: AdapterView<*>?) {  /*Somente para compatibilidade*/  }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 viewModel.brokerSelected.postValue(viewModel.allBrokersEvent.value?.get(position) ?: null)

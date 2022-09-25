@@ -8,7 +8,7 @@ import kotlinx.coroutines.*
 
 class TransactionCreditsValidateUseCase(
     private val walletRepository: WalletRepository,
-    val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
 
 
@@ -141,7 +141,7 @@ class TransactionCreditsValidateUseCase(
         }
     }
 
-    suspend fun returnWalletEntity(fkbroker: Long): WalletEntity? = withContext(coroutineDispatcher) {
+    private suspend fun returnWalletEntity(fkbroker: Long): WalletEntity? = withContext(coroutineDispatcher) {
         var wallet : WalletEntity? = walletRepository.getByBroker(fkbroker)
 
         if (wallet == null){

@@ -2,27 +2,14 @@ package com.samuel.myholderwallet.ui.broker
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.samuel.myholderwallet.R
-import com.samuel.myholderwallet.db.entity.BrokerEntity
-import com.samuel.myholderwallet.repository.BrokerRepository
 import com.samuel.myholderwallet.repository.BrokerRepositoryTest
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.*
-import net.bytebuddy.implementation.bytecode.Throw
 import org.junit.*
-import org.junit.rules.TestWatcher
-import org.junit.runner.Description
 import org.junit.runner.RunWith
 import org.junit.Before
 import org.junit.Test
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.Mockito.*
-import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.whenever
-
 
 @RunWith(MockitoJUnitRunner::class)
 class BrokerViewModelTest {
