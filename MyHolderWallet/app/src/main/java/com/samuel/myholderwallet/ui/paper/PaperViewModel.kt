@@ -32,7 +32,7 @@ class PaperViewModel(
             insertPaper(initial, description, type)
     }
 
-    private fun updatePaper(id: Long,initial: String, description: String, type: PaperType) = viewModelScope.launch {
+    private suspend fun updatePaper(id: Long,initial: String, description: String, type: PaperType)  {
         try {
             repository.update(PaperEntity().apply{
                 this.id = id
@@ -49,7 +49,7 @@ class PaperViewModel(
         }
     }
 
-    private fun insertPaper(initial: String, description: String, type: PaperType) = viewModelScope.launch {
+    private suspend fun insertPaper(initial: String, description: String, type: PaperType) {
         try {
             val id = repository.insert(PaperEntity().apply {
                 this.initial = initial

@@ -26,7 +26,9 @@ class PaperListViewModel(private val repository: PaperRepository): ViewModel() {
 
     fun deletePaper(paper: PaperEntity?) = viewModelScope.launch {
         try{
-            paper?.let {
+            if (paper == null) throw Exception("Necessário selecionar o papel para excluir")
+
+            paper.let {
                 repository.delete(paper)
                 _messageStateEventData.value = R.string.paper_deleted_sucessfully
             }

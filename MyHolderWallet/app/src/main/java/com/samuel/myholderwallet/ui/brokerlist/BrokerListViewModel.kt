@@ -26,7 +26,9 @@ class BrokerListViewModel(private val repository: BrokerRepository): ViewModel()
 
     fun deleteBroker(broker: BrokerEntity?) = viewModelScope.launch {
         try{
-            broker?.let {
+            if (broker == null) throw Exception("Necessário a corretora para excluir")
+
+            broker.let {
                 repository.delete(broker)
                 _messageStateEventData.value = R.string.broker_deleted_sucessfully
             }

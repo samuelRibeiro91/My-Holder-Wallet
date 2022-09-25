@@ -8,13 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.samuel.myholderwallet.R
 import com.samuel.myholderwallet.db.entity.BrokerEntity
 import com.samuel.myholderwallet.repository.BrokerRepository
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class BrokerViewModel(
-    private val repository: BrokerRepository,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.Main
+    private val repository: BrokerRepository
 ) : ViewModel() {
 
     private val _brokerStateEventData = MutableLiveData<BrokerState>()
@@ -25,7 +22,7 @@ class BrokerViewModel(
     val messageStateEventData : LiveData<Int>
         get() = _messageStateEventData
 
-    fun insertOrUpdateBroker(name: String, id: Long = 0) = viewModelScope.launch(dispatcher) {
+    fun insertOrUpdateBroker(name: String, id: Long = 0) = viewModelScope.launch {
         if (id > 0){
             updateBroker(id, name)
         }
@@ -58,6 +55,10 @@ class BrokerViewModel(
             if (id > 0){
                 _brokerStateEventData.value = BrokerState.Inserted
                 _messageStateEventData.value = R.string.broker_inserted_sucessfully
+            }
+            else
+            {
+                _messageStateEventData.value = R.string.broker_error_to_insert
             }
 
         } catch (ex: Exception){
