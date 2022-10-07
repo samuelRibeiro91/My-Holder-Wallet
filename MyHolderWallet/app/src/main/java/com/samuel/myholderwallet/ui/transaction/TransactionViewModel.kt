@@ -46,11 +46,13 @@ class TransactionViewModel(
     val allBrokersEvent: LiveData<List<BrokerEntity>>
         get() = _allBrokersEvent
 
-    var brokerSelected = MutableLiveData<BrokerEntity>()
+    private val _brokerSelected = MutableLiveData<BrokerEntity>()
 
-    var paperSelected = MutableLiveData<PaperEntity>()
+    private val _paperSelected = MutableLiveData<PaperEntity>()
 
-    var movementTypeSelected = MutableLiveData<MovementTypes>()
+    private val _movementTypeSelected = MutableLiveData<MovementTypes>()
+    val movementTypeSelected: LiveData<MovementTypes>
+      get() = _movementTypeSelected
 
     var oldValue     = MutableLiveData<Float>()
     var oldQuantity  = MutableLiveData<Int>()
@@ -63,6 +65,18 @@ class TransactionViewModel(
         _allBrokersEvent.postValue(brokerRepository.getAll())
     }
 
+    fun setBrokerSelected(position: Int){
+        _brokerSelected.postValue(allBrokersEvent.value?.get(position))
+    }
+
+    fun setPaperSelected(position: Int){
+        _paperSelected.postValue(allPapersEvent.value?.get(position))
+    }
+
+    fun setMovementTypeSelected(position: Int){
+       _movementTypeSelected.postValue(MovementTypes.values()[position])
+    }
+
     fun insertOrUpdateTransaction(id: Long, quantity: Int, value: Float, cost: Float, type: MovementTypes, date: Double){
         if (id > 0){
            updateTransaction(TransactionEntity(
@@ -72,8 +86,8 @@ class TransactionViewModel(
                cost = cost,
                type = type,
                date = date,
-               fk_broker = brokerSelected.value?.id,
-               fk_paper =  paperSelected.value?.id
+               fk_broker = _brokerSelected.value?.id,
+               fk_paper =  _paperSelected.value?.id
            ))
         }
         else
@@ -84,8 +98,8 @@ class TransactionViewModel(
                 cost = cost,
                 type = type,
                 date = date,
-                fk_broker = brokerSelected.value?.id,
-                fk_paper =  paperSelected.value?.id
+                fk_broker = _brokerSelected.value?.id,
+                fk_paper =  _paperSelected.value?.id
             ))
         }
     }

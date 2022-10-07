@@ -154,7 +154,7 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
             override fun onNothingSelected(p0: AdapterView<*>?) {}
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                viewModel.paperSelected.postValue(viewModel.allPapersEvent.value?.get(position) ?: null)
+                viewModel.setPaperSelected(position)
             }
         }
 
@@ -162,7 +162,7 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
             override fun onNothingSelected(p0: AdapterView<*>?) {  }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                viewModel.brokerSelected.postValue(viewModel.allBrokersEvent.value?.get(position) ?: null)
+                viewModel.setBrokerSelected(position)
             }
         }
 
@@ -172,7 +172,7 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 
-                viewModel.movementTypeSelected.postValue(MovementTypes.values()[position])
+                viewModel.setMovementTypeSelected(position)
 
                  when(MovementTypes.values()[position]){
                      MovementTypes.BUY_PAPERS ->{
