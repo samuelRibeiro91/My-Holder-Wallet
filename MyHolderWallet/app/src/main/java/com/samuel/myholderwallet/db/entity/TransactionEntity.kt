@@ -37,5 +37,7 @@ data class TransactionEntity(
 
     var credit: Float = 0.0f,
 
-    var date: Double = 0.0
+    var date: Double = 0.0,
+
+    var factor: Int = 0
 ) : Parcelable

@@ -77,7 +77,7 @@ class TransactionViewModel(
        _movementTypeSelected.postValue(MovementTypes.values()[position])
     }
 
-    fun insertOrUpdateTransaction(id: Long, quantity: Int, value: Float, cost: Float, type: MovementTypes, date: Double){
+    fun insertOrUpdateTransaction(id: Long, quantity: Int, value: Float, cost: Float, type: MovementTypes, date: Double, factor: Int){
         if (id > 0){
            updateTransaction(TransactionEntity(
                id = id,
@@ -87,7 +87,8 @@ class TransactionViewModel(
                type = type,
                date = date,
                fk_broker = _brokerSelected.value?.id,
-               fk_paper =  _paperSelected.value?.id
+               fk_paper =  _paperSelected.value?.id,
+               factor = factor
            ))
         }
         else
@@ -99,7 +100,8 @@ class TransactionViewModel(
                 type = type,
                 date = date,
                 fk_broker = _brokerSelected.value?.id,
-                fk_paper =  _paperSelected.value?.id
+                fk_paper =  _paperSelected.value?.id,
+                factor = factor
             ))
         }
     }

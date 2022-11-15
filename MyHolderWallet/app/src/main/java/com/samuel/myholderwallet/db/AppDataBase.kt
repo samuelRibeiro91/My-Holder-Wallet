@@ -4,6 +4,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.samuel.myholderwallet.db.dao.TransactionDAO
 import com.samuel.myholderwallet.db.Converters.Converters
 import com.samuel.myholderwallet.db.dao.BrokerDAO
@@ -15,7 +17,7 @@ import com.samuel.myholderwallet.db.entity.TransactionEntity
 import com.samuel.myholderwallet.db.entity.WalletEntity
 
 
-@Database(entities = [PaperEntity::class, BrokerEntity::class, WalletEntity::class, TransactionEntity::class], version = 1)
+@Database(entities = [PaperEntity::class, BrokerEntity::class, WalletEntity::class, TransactionEntity::class], version = 2)
 @TypeConverters(Converters::class)
 abstract class AppDatabase: RoomDatabase() {
     abstract val paperDAO: PaperDAO
@@ -32,11 +34,19 @@ abstract class AppDatabase: RoomDatabase() {
             synchronized(this){
                 var instance: AppDatabase? = INSTANCE
 
+                val migrationAddFactor = object : Migration(1, 2) {
+                    override fun migrate(database: SupportSQLiteDatabase) {
+                        database.execSQL("alter table `transaction` add `factor` INTEGER NOT NULL default 0")
+                    }
+                }
+
                 if (instance == null){
                     instance = Room.databaseBuilder(
                         context,
                         AppDatabase::class.java, "walletdatabase"
-                    ).build()
+                    )
+                        .addMigrations(migrationAddFactor)
+                        .build()
 
                 }
 

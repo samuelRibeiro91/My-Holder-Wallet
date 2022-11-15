@@ -43,6 +43,7 @@
 
 
     <string name="quantidade">Quantidade</string>
+    <string name="fator">Fator</string>
     <string name="valor_unitario">Valor Unitário</string>
     <string name="custos_taxas_e_emolumentos">Custos (Taxas e Emolumentos)</string>
     <string name="date">Data</string>

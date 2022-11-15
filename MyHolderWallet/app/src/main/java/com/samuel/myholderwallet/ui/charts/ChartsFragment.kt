@@ -107,8 +107,12 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
             if (it.isNotEmpty())
                 setDividendsChart(it, requireView().findViewById(R.id.cht_dividends), colors)
-            else
+            else {
+                requireView().findViewById<BarChart>(R.id.cht_dividends).clear()
                 requireView().findViewById<BarChart>(R.id.cht_dividends).setNoDataText(getString(R.string.sem_dados_disponiveis))
+                requireView().findViewById<BarChart>(R.id.cht_dividends).invalidate()
+                requireView().findViewById<BarChart>(R.id.cht_dividends).notifyDataSetChanged()
+            }
         }
 
         viewModel.buysAndUsedDividends.observe(viewLifecycleOwner){
@@ -118,8 +122,13 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
             if (it.isNotEmpty())
                 setBuysAndUsedDividendsChart(it, requireView().findViewById(R.id.cht_buy_and_dividends), colors)
-            else
+            else {
+                requireView().findViewById<BarChart>(R.id.cht_buy_and_dividends).clear()
                 requireView().findViewById<BarChart>(R.id.cht_buy_and_dividends).setNoDataText(getString(R.string.sem_dados_disponiveis))
+                requireView().findViewById<BarChart>(R.id.cht_buy_and_dividends).invalidate()
+                requireView().findViewById<BarChart>(R.id.cht_buy_and_dividends).notifyDataSetChanged()
+
+            }
         }
 
         viewModel.stockWithValues.observe(viewLifecycleOwner){
@@ -138,8 +147,12 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
             if (it.isNotEmpty())
                 setPaperChart(it, requireView().findViewById(R.id.cht_total_stock), colors)
-            else
+            else {
+                requireView().findViewById<PieChart>(R.id.cht_total_stock).clear()
                 requireView().findViewById<PieChart>(R.id.cht_total_stock).setNoDataText(getString(R.string.sem_dados_disponiveis))
+                requireView().findViewById<PieChart>(R.id.cht_total_stock).invalidate()
+                requireView().findViewById<PieChart>(R.id.cht_total_stock).notifyDataSetChanged()
+            }
         }
 
         viewModel.reitWithValues.observe(viewLifecycleOwner){
@@ -159,8 +172,12 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
             if (it.isNotEmpty())
                 setPaperChart(it, requireView().findViewById(R.id.cht_total_reit), colors)
-            else
+            else {
+                requireView().findViewById<PieChart>(R.id.cht_total_reit).clear()
                 requireView().findViewById<PieChart>(R.id.cht_total_reit).setNoDataText(getString(R.string.sem_dados_disponiveis))
+                requireView().findViewById<PieChart>(R.id.cht_total_reit).invalidate()
+                requireView().findViewById<PieChart>(R.id.cht_total_reit).notifyDataSetChanged()
+            }
         }
 
         viewModel.adrWithValues.observe(viewLifecycleOwner){
@@ -179,8 +196,12 @@ class ChartsFragment : Fragment(R.layout.fragment_charts) {
 
             if (it.isNotEmpty())
                 setPaperChart(it, requireView().findViewById(R.id.cht_total_adr), colors)
-            else
+            else {
+                requireView().findViewById<PieChart>(R.id.cht_total_adr).clear()
                 requireView().findViewById<PieChart>(R.id.cht_total_adr).setNoDataText(getString(R.string.sem_dados_disponiveis))
+                requireView().findViewById<PieChart>(R.id.cht_total_adr).invalidate()
+                requireView().findViewById<PieChart>(R.id.cht_total_adr).notifyDataSetChanged()
+            }
         }
 
     }
