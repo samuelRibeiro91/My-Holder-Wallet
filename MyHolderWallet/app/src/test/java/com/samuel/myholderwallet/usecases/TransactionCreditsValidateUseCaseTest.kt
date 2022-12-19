@@ -1,12 +1,16 @@
 package com.samuel.myholderwallet.usecases
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.samuel.myholderwallet.db.entity.TransactionEntity
 import com.samuel.myholderwallet.db.entity.WalletEntity
+import com.samuel.myholderwallet.repository.TransactionRepository
 import com.samuel.myholderwallet.repository.WalletRepository
 import com.samuel.myholderwallet.types.MovementTypes
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.*
 import org.junit.Assert
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
@@ -18,13 +22,25 @@ private val FAKE_WALLETENTITY_NOCREDIT = WalletEntity(id = 1, broker = 1, balanc
 
 private val FAKE_WALLETENTITY_CREDIT   = WalletEntity(id = 1, broker = 1, balance = 0.0f, credit = 200.0f)
 
+private val FAKE_QUANTITY_PAPER = 100.0f
+
 @RunWith(MockitoJUnitRunner::class)
 class TransactionCreditsValidateUseCaseTest {
+
+    private val testScheduler = TestCoroutineScheduler()
+    private val testDispatcher = UnconfinedTestDispatcher(testScheduler)
+    private val testScope = TestScope(testDispatcher)
+
+    @get:Rule
+    var instantExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var transactionCreditsValidateUseCase : TransactionCreditsValidateUseCase
 
     @Mock
     private lateinit var walletRepository: WalletRepository
+
+    @Mock
+    private lateinit var transactionRepository: TransactionRepository
 
     private var transactionEntity = TransactionEntity(
         id = 1,
@@ -74,9 +90,22 @@ class TransactionCreditsValidateUseCaseTest {
         fk_broker = 1
     )
 
+    private var stockSplitTransactionEntity = TransactionEntity(
+        id = 1,
+        date = 0.0,
+        credit = 0.0f,
+        type = MovementTypes.STOCK_SPLIT,
+        quantity = 0,
+        factor = 3,
+        fk_paper = 1,
+        fk_broker = 1
+    )
+
    @Before
     fun setup(){
-        transactionCreditsValidateUseCase = TransactionCreditsValidateUseCase(walletRepository)
+       Dispatchers.setMain(testDispatcher)
+
+        transactionCreditsValidateUseCase = TransactionCreditsValidateUseCase(walletRepository, transactionRepository)
     }
 
     @Test
@@ -193,6 +222,30 @@ class TransactionCreditsValidateUseCaseTest {
         transactionCreditsValidateUseCase.validateTransactionUpdate(inflowDividendsTransactionEntityWithCredits, inflowDividendsTransactionEntityWithCredits.credit)
 
         Assert.assertEquals(0.0f, inflowDividendsTransactionEntityWithCredits.credit)
+    }
+
+
+    @Test
+    fun step13_insert_Stock_Split_InTransactionEntity() = testScope.runTest{
+        doReturn(FAKE_WALLETENTITY_CREDIT).`when`(walletRepository).getByBroker(1)
+        doReturn(FAKE_QUANTITY_PAPER).`when`(transactionRepository).getQuantitiesOfPaperByBroker(1, 1)
+
+        transactionCreditsValidateUseCase.validateTransactionInsert(stockSplitTransactionEntity)
+
+        Assert.assertEquals(200, stockSplitTransactionEntity.quantity)
+    }
+
+    @Test
+    fun step14_insert_Stock_Bonus_InTransactionEntity() = testScope.runTest{
+        doReturn(FAKE_WALLETENTITY_CREDIT).`when`(walletRepository).getByBroker(1)
+        doReturn(FAKE_QUANTITY_PAPER).`when`(transactionRepository).getQuantitiesOfPaperByBroker(1, 1)
+
+        stockSplitTransactionEntity.factor = 6
+        stockSplitTransactionEntity.type = MovementTypes.STOCK_BONUS
+
+        transactionCreditsValidateUseCase.validateTransactionInsert(stockSplitTransactionEntity)
+
+        Assert.assertEquals(16, stockSplitTransactionEntity.quantity)
     }
 
 }

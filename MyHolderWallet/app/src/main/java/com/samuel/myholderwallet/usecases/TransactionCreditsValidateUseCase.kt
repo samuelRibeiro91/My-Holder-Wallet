@@ -2,12 +2,16 @@ package com.samuel.myholderwallet.usecases
 
 import com.samuel.myholderwallet.db.entity.TransactionEntity
 import com.samuel.myholderwallet.db.entity.WalletEntity
+import com.samuel.myholderwallet.repository.TransactionRepository
 import com.samuel.myholderwallet.repository.WalletRepository
 import com.samuel.myholderwallet.types.MovementTypes
 import kotlinx.coroutines.*
+import kotlin.math.roundToInt
+import kotlin.math.truncate
 
 class TransactionCreditsValidateUseCase(
     private val walletRepository: WalletRepository,
+    private val transactionRepository: TransactionRepository,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
 
@@ -56,6 +60,31 @@ class TransactionCreditsValidateUseCase(
                     wallet.credit = finalCredit
                     walletRepository.update(wallet)
                 }
+
+                MovementTypes.STOCK_SPLIT ->{
+                    transactionEntity.credit = 0.0f
+                    transactionEntity.value  = 0.0f
+                    val vQuantity = transactionRepository.getQuantitiesOfPaperByBroker(transactionEntity.fk_broker!!, transactionEntity.fk_paper!!)
+
+                    if (vQuantity <= 0.0) throw  Exception("Não há compras desse papel nessa corretora!")
+
+
+                    var vTotal = (vQuantity * (transactionEntity.factor-1))
+                    transactionEntity.quantity = vTotal.toInt()
+                }
+
+                MovementTypes.STOCK_BONUS -> {
+                    transactionEntity.credit = 0.0f
+                    transactionEntity.value  = 0.0f
+
+                    val vQuantity = transactionRepository.getQuantitiesOfPaperByBroker(transactionEntity.fk_broker!!, transactionEntity.fk_paper!!)
+
+                    if (vQuantity <= 0.0) throw  Exception("Não há compras desse papel nessa corretora!")
+
+                    var vTotal: Int = (truncate(vQuantity / transactionEntity.factor).toInt())
+                    transactionEntity.quantity = vTotal
+                }
+
             }
         }
     }
@@ -88,6 +117,10 @@ class TransactionCreditsValidateUseCase(
 
                     wallet.credit = finalCredit
                     walletRepository.update(wallet)
+                }
+
+                MovementTypes.STOCK_SPLIT -> {
+                    throw Exception("Não é possível excluir esse registro")
                 }
             }
         }
@@ -136,6 +169,9 @@ class TransactionCreditsValidateUseCase(
 
                     wallet.credit = finalCredit
                     walletRepository.update(wallet)
+                }
+                MovementTypes.STOCK_SPLIT -> {
+                    throw Exception("Não é possível atualizar esse registro")
                 }
             }
         }

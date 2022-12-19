@@ -69,6 +69,10 @@ class TransactionListViewModel(
         }
     }
 
+    fun blockDelete(){
+        _messageStateEventData.value = R.string.block_delete
+    }
+
     companion object{
         private val TAG = TransactionListViewModel::class.java.simpleName
     }

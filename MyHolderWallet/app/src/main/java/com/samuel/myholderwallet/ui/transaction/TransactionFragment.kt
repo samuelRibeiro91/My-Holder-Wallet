@@ -50,7 +50,7 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
                 val walletDAO : WalletDAO = AppDatabase.getInstance(requireContext()).walletDAO
                 val walletRepository: WalletRepository = WalletRepositoryImpl(walletDAO)
 
-                val transactionCreditsValidateUseCase = TransactionCreditsValidateUseCase(walletRepository)
+                val transactionCreditsValidateUseCase = TransactionCreditsValidateUseCase(walletRepository, transactionRepository)
 
                 return TransactionViewModel(
                     transactionRepository = transactionRepository,
@@ -107,6 +107,7 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
             requireView().findViewById<TextInputEditText>(R.id.input_quantity)  .setText(transactionEntity.quantity.toString())
             requireView().findViewById<TextInputEditText>(R.id.input_value)     .setText(transactionEntity.value.toString())
             requireView().findViewById<TextInputEditText>(R.id.input_costs)     .setText(transactionEntity.cost.toString())
+            requireView().findViewById<TextInputEditText>(R.id.input_factor)    .setText(transactionEntity.factor.toString())
 
             //Date
             requireView().findViewById<TextInputEditText>(R.id.input_date)     .setText(SimpleDateFormat("dd/MM/yyyy").format(Date(transactionEntity.date.toLong())))
@@ -118,6 +119,9 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
         viewModel.allBrokersEvent.observe(viewLifecycleOwner) { list ->
             requireView().findViewById<Spinner>(R.id.spinner_broker).adapter =  ArrayAdapter(requireContext(), R.layout.spinneritem, R.id.spinnerText, list)
 
+            requireView().findViewById<FloatingActionButton>(R.id.faAddTransaction).visibility = View.VISIBLE
+            requireView().findViewById<TextInputEditText>(R.id.input_value).isEnabled = true
+
             args.transaction?.let { transactionEntity ->
                 //Broker
                 viewModel.allBrokersEvent.value?.forEach { brokerEntity ->
@@ -127,6 +131,21 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
                     }
                 }
                 requireView().findViewById<Spinner>(R.id.spinner_broker).isEnabled = false
+
+
+                if ((transactionEntity.type == MovementTypes.STOCK_SPLIT)  ||
+                    (transactionEntity.type == MovementTypes.STOCK_BONUS)  ||
+                    (transactionEntity.type == MovementTypes.STOCK_INPLIT)  ){
+                    requireView().findViewById<Spinner>(R.id.spinner_paper).isEnabled = false
+                    requireView().findViewById<TextInputEditText>(R.id.input_date).isEnabled = false
+                    requireView().findViewById<TextInputEditText>(R.id.input_factor).isEnabled = false
+
+                    if (requireView().findViewById<TextInputEditText>(R.id.input_value).visibility == View.VISIBLE)
+                        requireView().findViewById<TextInputEditText>(R.id.input_value).isEnabled = false
+
+                    requireView().findViewById<FloatingActionButton>(R.id.faAddTransaction).visibility = View.GONE
+                }
+
             }
 
         }
@@ -175,7 +194,8 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
                 viewModel.setMovementTypeSelected(position)
 
                  when(MovementTypes.values()[position]){
-                     MovementTypes.BUY_PAPERS ->{
+                     MovementTypes.BUY_PAPERS,
+                     MovementTypes.SELL_PAPERS->{
                          requireView().findViewById<Spinner>(R.id.spinner_paper).visibility = View.VISIBLE
                          requireView().findViewById<TextInputLayout>(R.id.input_layout_quantity).visibility = View.VISIBLE
                          requireView().findViewById<TextInputEditText>(R.id.input_quantity).visibility = View.VISIBLE
@@ -193,7 +213,7 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
                          requireView().findViewById<TextInputEditText>(R.id.input_costs).visibility = View.GONE
                          requireView().findViewById<TextInputLayout>(R.id.input_layout_factor).visibility = View.GONE
                          requireView().findViewById<TextInputEditText>(R.id.input_factor).visibility = View.GONE
-                         requireView().findViewById<TextInputLayout>(R.id.input_layout_value).hint = "Valor Total"
+                         requireView().findViewById<TextInputLayout>(R.id.input_layout_value).hint = getString(R.string.valor_total)
                      }
 
                      MovementTypes.CASH_WITHDRAWAL -> {
@@ -204,10 +224,11 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
                          requireView().findViewById<TextInputEditText>(R.id.input_costs).visibility = View.VISIBLE
                          requireView().findViewById<TextInputLayout>(R.id.input_layout_factor).visibility = View.GONE
                          requireView().findViewById<TextInputEditText>(R.id.input_factor).visibility = View.GONE
-                         requireView().findViewById<TextInputLayout>(R.id.input_layout_value).hint = "Valor Total"
+                         requireView().findViewById<TextInputLayout>(R.id.input_layout_value).hint =  getString(R.string.valor_total)
                      }
 
-                     MovementTypes.INFLOW_DIVIDENDS -> {
+                     MovementTypes.INFLOW_DIVIDENDS,
+                     MovementTypes.PICKING -> {
                          requireView().findViewById<Spinner>(R.id.spinner_paper).visibility = View.VISIBLE
                          requireView().findViewById<TextInputLayout>(R.id.input_layout_quantity).visibility = View.GONE
                          requireView().findViewById<TextInputEditText>(R.id.input_quantity).visibility = View.GONE
@@ -215,21 +236,22 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
                          requireView().findViewById<TextInputEditText>(R.id.input_costs).visibility = View.GONE
                          requireView().findViewById<TextInputLayout>(R.id.input_layout_factor).visibility = View.GONE
                          requireView().findViewById<TextInputEditText>(R.id.input_factor).visibility = View.GONE
-                         requireView().findViewById<TextInputLayout>(R.id.input_layout_value).hint = "Valor Total"
+                         requireView().findViewById<TextInputLayout>(R.id.input_layout_value).hint =  getString(R.string.valor_total)
                      }
 
-                     MovementTypes.SELL_PAPERS -> {
-                         requireView().findViewById<Spinner>(R.id.spinner_paper).visibility = View.VISIBLE
-                         requireView().findViewById<TextInputLayout>(R.id.input_layout_quantity).visibility = View.VISIBLE
-                         requireView().findViewById<TextInputEditText>(R.id.input_quantity).visibility = View.VISIBLE
-                         requireView().findViewById<TextInputLayout>(R.id.input_layout_costs).visibility = View.VISIBLE
-                         requireView().findViewById<TextInputEditText>(R.id.input_costs).visibility = View.VISIBLE
-                         requireView().findViewById<TextInputLayout>(R.id.input_layout_factor).visibility = View.GONE
-                         requireView().findViewById<TextInputEditText>(R.id.input_factor).visibility = View.GONE
-                         requireView().findViewById<TextInputLayout>(R.id.input_layout_value).hint = "Valor Unitário"
-                     }
                      MovementTypes.STOCK_BONUS,
-                     MovementTypes.STOCK_INPLIT,
+                     MovementTypes.STOCK_INPLIT ->
+                     {
+                         requireView().findViewById<Spinner>(R.id.spinner_paper).visibility = View.VISIBLE
+                         requireView().findViewById<TextInputLayout>(R.id.input_layout_factor).visibility = View.VISIBLE
+                         requireView().findViewById<TextInputEditText>(R.id.input_factor).visibility = View.VISIBLE
+                         requireView().findViewById<TextInputLayout>(R.id.input_layout_quantity).visibility = View.GONE
+                         requireView().findViewById<TextInputEditText>(R.id.input_quantity).visibility = View.GONE
+                         requireView().findViewById<TextInputLayout>(R.id.input_layout_costs).visibility = View.GONE
+                         requireView().findViewById<TextInputEditText>(R.id.input_costs).visibility = View.GONE
+                         requireView().findViewById<TextInputLayout>(R.id.input_layout_value).hint = "Valor"
+                     }
+
                      MovementTypes.STOCK_SPLIT ->
                      {
                          requireView().findViewById<Spinner>(R.id.spinner_paper).visibility = View.VISIBLE
@@ -239,18 +261,8 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
                          requireView().findViewById<TextInputEditText>(R.id.input_quantity).visibility = View.GONE
                          requireView().findViewById<TextInputLayout>(R.id.input_layout_costs).visibility = View.GONE
                          requireView().findViewById<TextInputEditText>(R.id.input_costs).visibility = View.GONE
-
-                         requireView().findViewById<TextInputLayout>(R.id.input_layout_value).hint = "Valor"
-                     }
-                     MovementTypes.PICKING -> {
-                         requireView().findViewById<Spinner>(R.id.spinner_paper).visibility = View.VISIBLE
-                         requireView().findViewById<TextInputLayout>(R.id.input_layout_quantity).visibility = View.GONE
-                         requireView().findViewById<TextInputEditText>(R.id.input_quantity).visibility = View.GONE
-                         requireView().findViewById<TextInputLayout>(R.id.input_layout_costs).visibility = View.GONE
-                         requireView().findViewById<TextInputEditText>(R.id.input_costs).visibility = View.GONE
-                         requireView().findViewById<TextInputLayout>(R.id.input_layout_factor).visibility = View.GONE
-                         requireView().findViewById<TextInputEditText>(R.id.input_factor).visibility = View.GONE
-                         requireView().findViewById<TextInputLayout>(R.id.input_layout_value).hint = "Valor Total"
+                         requireView().findViewById<TextInputLayout>(R.id.input_layout_value).visibility = View.GONE
+                         requireView().findViewById<TextInputLayout>(R.id.input_layout_value).visibility = View.GONE
                      }
 
                  }
@@ -263,26 +275,36 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
             //Validations
             var error = false
 
-            val inputValue = requireView().findViewById<TextInputEditText>(R.id.input_value)
             var value = 0.0f
 
-            if (inputValue.text!!.isEmpty()){
-                inputValue.requestFocus()
-                inputValue.error = "Preencha o Valor"
+            when (viewModel.movementTypeSelected.value!!) {
 
-                error = true
-            }
-            else
-            {
-                if (inputValue.text!!.toString().toFloat() <= 0){
-                    inputValue.requestFocus()
-                    inputValue.error = "Valor não pode ser menor ou igual a zero!"
+                MovementTypes.MONEY_DEPOSIT,
+                MovementTypes.INFLOW_DIVIDENDS,
+                MovementTypes.CASH_WITHDRAWAL,
+                MovementTypes.SELL_PAPERS,
+                MovementTypes.BUY_PAPERS,
+                MovementTypes.STOCK_BONUS-> {
+                    val inputValue = requireView().findViewById<TextInputEditText>(R.id.input_value)
 
-                    error = true
+
+                    if (inputValue.text!!.isEmpty()) {
+                        inputValue.requestFocus()
+                        inputValue.error = "Preencha o Valor"
+
+                        error = true
+                    } else {
+                        if (inputValue.text!!.toString().toFloat() <= 0) {
+                            inputValue.requestFocus()
+                            inputValue.error = "Valor não pode ser menor ou igual a zero!"
+
+                            error = true
+                        }
+
+
+                        value = inputValue.text!!.toString().toFloat()
+                    }
                 }
-
-
-                value = inputValue.text!!.toString().toFloat()
             }
 
             val inputDate = requireView().findViewById<TextInputEditText>(R.id.input_date)
@@ -366,9 +388,9 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
                     }
                     else
                     {
-                        if (inputFactor.text!!.toString().toInt() <= 0){
+                        if (inputFactor.text!!.toString().toInt() <= 1){
                             inputFactor.requestFocus()
-                            inputFactor.error = "Fator não pode ser menor ou igual a zero!"
+                            inputFactor.error = "Fator não pode ser menor ou igual a um!"
 
                             error = true
                         }

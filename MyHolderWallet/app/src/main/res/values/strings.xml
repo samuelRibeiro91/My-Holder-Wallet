@@ -50,4 +50,6 @@
     <string name="transaction">Transação</string>
     <string name="transaction_type">Tipo de Transação</string>
     <string name="sem_dados_disponiveis">Sem dados Disponíveis</string>
+    <string name="valor_total">Valor Total</string>
+    <string name="block_delete">Essa transação não pode ser excluída</string>
 </resources>

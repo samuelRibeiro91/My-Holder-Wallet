@@ -31,12 +31,13 @@ interface TransactionDAO {
     @Delete
     suspend fun delete(transaction: TransactionEntity)
 
-    @Query("select SUM(case type when 1 then quantity else quantity * -1 end)quantities from `transaction` where fk_broker = :brokerID and fk_paper = :paperID")
+    @Query("select SUM(case type when 4 then  quantity * -1 else quantity end)quantities from `transaction` where fk_broker = :brokerID and fk_paper = :paperID")
     suspend fun getQuantitiesOfPaperByBroker(brokerID: Long, paperID: Long): Float
 
 
     @Query( "select coalesce(SUM(case `transaction`.type when 0 then value " +
             "                    when 1 then ((value * quantity) + cost) * -1 " +
+            "                    when 5 then ((value * quantity) + cost) * -1 " +
             "                    when 2 then value -cost" +
             "                    when 3 then (value -cost) * -1 " +
             "                    when 4 then ((value * quantity) - cost) " +
@@ -51,6 +52,7 @@ interface TransactionDAO {
     @Query("select " +
             "    coalesce(SUM(case `transaction`.type " +
             "                    when 1 then ((value * quantity))  " +
+            "                    when 5 then ((value * quantity))  " +
             "                    when 4  then ((coalesce((select  " +
             "                                       sum(transac.value * transac.quantity) / sum(transac.quantity)average_paper " +
             "                                         FROM `transaction` transac " +
@@ -67,6 +69,7 @@ interface TransactionDAO {
     @Query("select " +
             "    coalesce(SUM(case `transaction`.type " +
             "                    when 1 then ((value * quantity))  " +
+            "                    when 5 then ((value * quantity))  " +
             "                    when 4  then ((coalesce((select  " +
             "                                       sum(transac.value * transac.quantity) / sum(transac.quantity)average_paper " +
             "                                         FROM `transaction` transac " +
@@ -82,6 +85,7 @@ interface TransactionDAO {
     @Query("select " +
             "    coalesce(SUM(case `transaction`.type " +
             "                    when 1 then ((value * quantity))  " +
+            "                    when 5 then ((value * quantity))  " +
             "                    when 4  then ((coalesce((select  " +
             "                                       sum(transac.value * transac.quantity) / sum(transac.quantity)average_paper " +
             "                                         FROM `transaction` transac " +
@@ -101,6 +105,7 @@ interface TransactionDAO {
             "    paper.initial," +
             "    coalesce(SUM(case `transaction`.type " +
             "                    when 1 then ((value * quantity))  " +
+            "                    when 5 then ((value * quantity))  " +
             "                    when 4  then ((coalesce((select  " +
             "                                       sum(transac.value * transac.quantity) / sum(transac.quantity)average_paper " +
             "                                         FROM `transaction` transac " +
@@ -120,6 +125,7 @@ interface TransactionDAO {
             "    paper.initial," +
             "    coalesce(SUM(case `transaction`.type " +
             "                    when 1 then ((value * quantity))  " +
+            "                    when 5 then ((value * quantity))  " +
             "                    when 4  then ((coalesce((select  " +
             "                                       sum(transac.value * transac.quantity) / sum(transac.quantity)average_paper " +
             "                                         FROM `transaction` transac " +
@@ -129,7 +135,7 @@ interface TransactionDAO {
             "                  end), 0)value " +
             "FROM `transaction` " +
             "inner join paper on (paper.id = `transaction`.fk_paper) " +
-            "where `transaction`.fk_broker = :brokerID and `transaction`.type in (1,4) and paper.type = 1 " +
+            "where `transaction`.fk_broker = :brokerID and `transaction`.type in (1,4,5) and paper.type = 1 " +
             "group by 1 " +
             "order by 2 desc")
     suspend fun getReitsWithValues(brokerID: Long): List<PaperValueWrapperEntity>
@@ -139,6 +145,7 @@ interface TransactionDAO {
             "    paper.initial," +
             "    coalesce(SUM(case `transaction`.type " +
             "                    when 1 then ((value * quantity))  " +
+            "                    when 5 then ((value * quantity))  " +
             "                    when 4  then ((coalesce((select  " +
             "                                       sum(transac.value * transac.quantity) / sum(transac.quantity)average_paper " +
             "                                         FROM `transaction` transac " +
@@ -148,7 +155,7 @@ interface TransactionDAO {
             "                  end), 0)value " +
             "FROM `transaction` " +
             "inner join paper on (paper.id = `transaction`.fk_paper) " +
-            "where `transaction`.fk_broker = :brokerID and `transaction`.type in (1,4) and paper.type = 2 " +
+            "where `transaction`.fk_broker = :brokerID and `transaction`.type in (1,4,5) and paper.type = 2 " +
             "group by 1 " +
             "order by 2 desc")
     suspend fun getAdrsWithValues(brokerID: Long): List<PaperValueWrapperEntity>
@@ -171,7 +178,7 @@ interface TransactionDAO {
             "    sum(`transaction`.credit)credits  " +
             "from `transaction` " +
             "where (`transaction`.fk_broker =  :brokerID) " +
-            "and  (`transaction`.type in (1,4)) " +
+            "and  (`transaction`.type in (1,4,5)) " +
             "and  ((`transaction`.date >= :initialValue) and (`transaction`.date <= :endValue)) " +
             "group by 1 ")
     suspend fun getBuysAndUsedDividendsByDate(brokerID: Long, initialValue:Long, endValue: Long): List<DataTransactionsWrapperEntity>

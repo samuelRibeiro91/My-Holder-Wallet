@@ -22,6 +22,7 @@ import com.samuel.myholderwallet.db.dao.PaperDAO
 import com.samuel.myholderwallet.db.dao.WalletDAO
 import com.samuel.myholderwallet.extension.navigateWithAnimations
 import com.samuel.myholderwallet.repository.*
+import com.samuel.myholderwallet.types.MovementTypes
 import com.samuel.myholderwallet.usecases.TransactionCreditsValidateUseCase
 
 class TransactionListFragment : Fragment(R.layout.fragment_transaction_list) {
@@ -41,7 +42,7 @@ class TransactionListFragment : Fragment(R.layout.fragment_transaction_list) {
                 val walletDAO : WalletDAO = AppDatabase.getInstance(requireContext()).walletDAO
                 val walletRepository: WalletRepository = WalletRepositoryImpl(walletDAO)
 
-                val transactionCreditsValidateUseCase = TransactionCreditsValidateUseCase(walletRepository)
+                val transactionCreditsValidateUseCase = TransactionCreditsValidateUseCase(walletRepository, transactionRepository)
 
                 return TransactionListViewModel(transactionRepository, brokerRepository, paperRepository, transactionCreditsValidateUseCase) as T
             }
@@ -82,21 +83,32 @@ class TransactionListFragment : Fragment(R.layout.fragment_transaction_list) {
                     findNavController().navigateWithAnimations(directions)
 
                 }
-                onDeleteClick = { paper ->
+                onDeleteClick = { transaction ->
 
-                    AlertDialog.Builder(context)
-                        .setTitle("Excluir Papel")
-                        .setMessage("Deseja realmente excluir esse papel?")
-                        .setPositiveButton("Confirmar") { _, _ ->
-                            viewModel.deleteTransaction(paper)
-                            viewModel.getTransactions()
-                        }
-                        .setNegativeButton("Cancelar"
-                        ) { _, _ ->
-                            //
-                        }
-                        .create()
-                        .show()
+                    if ((transaction.type == MovementTypes.STOCK_SPLIT)  ||
+                        (transaction.type == MovementTypes.STOCK_BONUS)  ||
+                        (transaction.type == MovementTypes.STOCK_INPLIT)  ){
+
+                        viewModel.blockDelete()
+                    }
+                    else {
+
+                        AlertDialog.Builder(context)
+                            .setTitle("Excluir Transação")
+                            .setMessage("Deseja realmente excluir essa transação?")
+                            .setPositiveButton("Confirmar") { _, _ ->
+                                viewModel.deleteTransaction(transaction)
+                                viewModel.getTransactions()
+                            }
+                            .setNegativeButton(
+                                "Cancelar"
+                            ) { _, _ ->
+                                //
+                            }
+                            .create()
+                            .show()
+
+                    }
 
                 }
             }
