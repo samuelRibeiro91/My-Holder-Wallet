@@ -41,6 +41,8 @@ interface TransactionDAO {
             "                    when 2 then value -cost" +
             "                    when 3 then (value -cost) * -1 " +
             "                    when 4 then ((value * quantity) - cost) " +
+            "                    when 6 then ((value * quantity) - cost) " +
+            "                    when 7 then ((value * quantity) + cost) * -1 " +
             "                    else 0 " +
             " end), 0)account_balance " +
             "FROM `transaction` " +
@@ -59,6 +61,8 @@ interface TransactionDAO {
             "                                         inner join paper pp on (pp.id = transac.fk_paper) " +
             "                                         where transac.type = 1 and transac.fk_broker = `transaction`.fk_broker and pp.id = paper.id " +
             "                                        ),0) * `transaction`.quantity) * -1) " +
+            "                    when 6 then ((value * quantity))  " +
+            "                    when 7 then ((value * quantity))  " +
             "                  end), 0)total_stocks " +
             "FROM `transaction` " +
             "inner join paper on (paper.id = `transaction`.fk_paper) " +
@@ -76,6 +80,8 @@ interface TransactionDAO {
             "                                         inner join paper pp on (pp.id = transac.fk_paper) " +
             "                                         where transac.type = 1 and transac.fk_broker = `transaction`.fk_broker and pp.id = paper.id " +
             "                                        ),0) * `transaction`.quantity) * -1) " +
+            "                    when 6 then ((value * quantity))  " +
+            "                    when 7 then ((value * quantity))  " +
             "                  end), 0)total_reits " +
             "FROM `transaction` " +
             "inner join paper on (paper.id = `transaction`.fk_paper) " +
@@ -92,6 +98,8 @@ interface TransactionDAO {
             "                                         inner join paper pp on (pp.id = transac.fk_paper) " +
             "                                         where transac.type = 1 and transac.fk_broker = `transaction`.fk_broker and pp.id = paper.id " +
             "                                        ),0) * `transaction`.quantity) * -1) " +
+            "                    when 6 then ((value * quantity))  " +
+            "                    when 7 then ((value * quantity))  " +
             "                  end), 0)total_adrs " +
             "FROM `transaction` " +
             "inner join paper on (paper.id = `transaction`.fk_paper) " +
@@ -112,6 +120,8 @@ interface TransactionDAO {
             "                                         inner join paper pp on (pp.id = transac.fk_paper) " +
             "                                         where transac.type = 1 and transac.fk_broker = `transaction`.fk_broker and pp.id = paper.id " +
             "                                        ),0) * `transaction`.quantity) * -1) " +
+            "                    when 6 then ((value * quantity))  " +
+            "                    when 7 then ((value * quantity))  " +
             "                  end), 0)value " +
             "FROM `transaction` " +
             "inner join paper on (paper.id = `transaction`.fk_paper) " +
@@ -132,6 +142,8 @@ interface TransactionDAO {
             "                                         inner join paper pp on (pp.id = transac.fk_paper) " +
             "                                         where transac.type = 1 and transac.fk_broker = `transaction`.fk_broker and pp.id = paper.id " +
             "                                        ),0) * `transaction`.quantity) * -1) " +
+            "                    when 6 then ((value * quantity))  " +
+            "                    when 7 then ((value * quantity))  " +
             "                  end), 0)value " +
             "FROM `transaction` " +
             "inner join paper on (paper.id = `transaction`.fk_paper) " +
@@ -152,6 +164,8 @@ interface TransactionDAO {
             "                                         inner join paper pp on (pp.id = transac.fk_paper) " +
             "                                         where transac.type = 1 and transac.fk_broker = `transaction`.fk_broker and pp.id = paper.id " +
             "                                        ),0) * `transaction`.quantity) * -1) " +
+            "                    when 6 then ((value * quantity))  " +
+            "                    when 7 then ((value * quantity))  " +
             "                  end), 0)value " +
             "FROM `transaction` " +
             "inner join paper on (paper.id = `transaction`.fk_paper) " +

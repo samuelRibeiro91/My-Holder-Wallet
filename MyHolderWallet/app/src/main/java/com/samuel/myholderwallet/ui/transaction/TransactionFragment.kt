@@ -284,6 +284,7 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
                 MovementTypes.CASH_WITHDRAWAL,
                 MovementTypes.SELL_PAPERS,
                 MovementTypes.BUY_PAPERS,
+                MovementTypes.STOCK_INPLIT,
                 MovementTypes.STOCK_BONUS-> {
                     val inputValue = requireView().findViewById<TextInputEditText>(R.id.input_value)
 

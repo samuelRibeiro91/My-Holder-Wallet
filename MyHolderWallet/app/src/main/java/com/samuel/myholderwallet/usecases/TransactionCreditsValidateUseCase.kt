@@ -85,6 +85,30 @@ class TransactionCreditsValidateUseCase(
                     transactionEntity.quantity = vTotal
                 }
 
+                MovementTypes.STOCK_INPLIT -> {
+                    transactionEntity.credit = 0.0f
+
+                    val vQuantity = transactionRepository.getQuantitiesOfPaperByBroker(transactionEntity.fk_broker!!, transactionEntity.fk_paper!!)
+
+                    if (vQuantity <= 0.0) throw  Exception("Não há compras desse papel nessa corretora!")
+
+                    val vTransCorrection = TransactionEntity(
+                      quantity = vQuantity.toInt() * -1,
+                      value =  (transactionEntity.value / vQuantity),
+                      type =   MovementTypes.STOCK_INPLIT,
+                      fk_paper = transactionEntity.fk_paper,
+                      fk_broker = transactionEntity.fk_broker,
+                      date = transactionEntity.date
+                    )
+
+                    transactionRepository.insert(vTransCorrection)
+
+
+                    var vTotal: Int = (truncate(vQuantity / transactionEntity.factor).toInt())
+
+                    transactionEntity.quantity = vTotal
+                }
+
             }
         }
     }
