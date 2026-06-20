@@ -19,7 +19,7 @@ import kotlinx.parcelize.Parcelize
 
 data class TransactionEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
+    var id: Long = 0,
 
     @ColumnInfo(index = true)
     var fk_broker: Long? = null,

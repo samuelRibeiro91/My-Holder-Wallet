@@ -285,7 +285,8 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
                 MovementTypes.SELL_PAPERS,
                 MovementTypes.BUY_PAPERS,
                 MovementTypes.STOCK_INPLIT,
-                MovementTypes.STOCK_BONUS-> {
+                MovementTypes.STOCK_BONUS,
+                MovementTypes.PICKING -> {
                     val inputValue = requireView().findViewById<TextInputEditText>(R.id.input_value)
 
 
@@ -306,6 +307,7 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
                         value = inputValue.text!!.toString().toFloat()
                     }
                 }
+                MovementTypes.STOCK_SPLIT -> Unit
             }
 
             val inputDate = requireView().findViewById<TextInputEditText>(R.id.input_date)
@@ -319,7 +321,7 @@ class TransactionFragment : Fragment(R.layout.fragment_transaction) {
             }
             else
             {
-                date = SimpleDateFormat("dd/MM/yyyy").parse(inputDate.text.toString()).time.toDouble()
+                date = SimpleDateFormat("dd/MM/yyyy").parse(inputDate.text.toString())!!.time.toDouble()
             }
 
 

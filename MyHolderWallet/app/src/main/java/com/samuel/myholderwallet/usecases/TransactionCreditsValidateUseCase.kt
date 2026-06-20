@@ -109,6 +109,11 @@ class TransactionCreditsValidateUseCase(
                     transactionEntity.quantity = vTotal
                 }
 
+                MovementTypes.MONEY_DEPOSIT,
+                MovementTypes.SELL_PAPERS,
+                MovementTypes.PICKING,
+                null -> Unit
+
             }
         }
     }
@@ -146,6 +151,13 @@ class TransactionCreditsValidateUseCase(
                 MovementTypes.STOCK_SPLIT -> {
                     throw Exception("Não é possível excluir esse registro")
                 }
+
+                MovementTypes.MONEY_DEPOSIT,
+                MovementTypes.SELL_PAPERS,
+                MovementTypes.STOCK_INPLIT,
+                MovementTypes.STOCK_BONUS,
+                MovementTypes.PICKING,
+                null -> Unit
             }
         }
     }
@@ -197,6 +209,13 @@ class TransactionCreditsValidateUseCase(
                 MovementTypes.STOCK_SPLIT -> {
                     throw Exception("Não é possível atualizar esse registro")
                 }
+
+                MovementTypes.MONEY_DEPOSIT,
+                MovementTypes.SELL_PAPERS,
+                MovementTypes.STOCK_INPLIT,
+                MovementTypes.STOCK_BONUS,
+                MovementTypes.PICKING,
+                null -> Unit
             }
         }
     }
